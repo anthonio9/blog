@@ -68,19 +68,21 @@ paginate = 5
   [languages.en]
     languageName = "English"
     title = "anthonio9 BLOG"
-    subtitle = "A simple, retro theme for Hugo"
-    owner = ""
-    keywords = ""
     copyright = ""
-    menuMore = "Show more"
-    readMore = "Read more"
-    readOtherPosts = "Read other posts"
-    newerPosts = "Newer posts"
-    olderPosts = "Older posts"
-    missingContentMessage = "Page not found..."
-    missingBackButtonLabel = "Back to home page"
-    minuteReadingTime = "min read"
-    words = "words"
+
+    [languages.en.params]
+      subtitle = "A simple, retro theme for Hugo"
+      menuMore = "Show more"
+      readMore = "Read more"
+      newerPosts = "Newer posts"
+      olderPosts = "Older posts"
+      minuteReadingTime = "min read"
+      missingContentMessage = "Page not found..."
+      missingBackButtonLabel = "Back to home page"
+      owner = ""
+      keywords = ""
+      readOtherPosts = "Read other posts"
+      words = "words"
 
     [languages.en.params.logo]
       logoText = "anthonio9 BLOG"
