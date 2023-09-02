@@ -1,0 +1,52 @@
+---
+title: "How to Edit Raspberry Pi Kernel With Yocto"
+date: 2023-09-01
+draft: true
+---
+
+= How to add drivers to Raspberry Pi Kernel with Yocto
+
+NOTE: *This article assumes the reader (YOU) is familiar with the Yocto Project, meta-raspberry-pi layer and has prior experience with Device Trees and Linux kernel drivers. If not, go and read some about it!*
+
+== What is it really about? 
+
+A modern Linux kernel driver consists of two parts: the Device Tree, which describes used resources and the driver itself. 
+These two components can either be added to the kernel source pre-build time or inserted into a running kernel instance as an external kernel module or *LKM* (Linux Kernel Module). 
+The first approach closely integrates the driver with the kernel source, but requires a kernel rebuild, whereas building an LKM is independent from the kernel buid. 
+
+== The Superior Approach
+
+Working with Yocto and RPI I've distinguished three ways of integrating kernel drivers in the system. Each way has its pros and cons and is suited best for different stages of project developement. Efficiency has always been an important factor for me, short build times and ease of applying changes is what makes living better! Expect detailed descriptions of dis / advantages of each method, hopefully YOU'll find your favorite :)
+
+Let me present the three methods to YOU:
+
+. *Patches Only* - best practices according to rasbperry pi and Yocto 
+. *Patches + external driver files* - less kernel patches?
+. *Linux Kernel Module* - even less kernel patches??
+
+====
+As I have the most experience working with audio / codec drivers, below examples will reflect that. Codec drivers in the linux kernel are located in https://github.com/raspberrypi/linux/tree/rpi-6.1.y/sound/soc/codec[`/sound/soc/codec`]. Device Trees are located in https://github.com/raspberrypi/linux/tree/rpi-6.1.y/arch/arm/boot/dts/overlays[`/arch/arm/boot/dts/overlays`]. Any examples of the dts (Device Tree) files or codec drivers will also be audio related.
+====
+
+=== Method one
+
+Best practices according to rasbperry pi and Yocto 
+
+=== Method two
+
+This is my personal favorite, keeps the high integration with the kernel, leaving the driver files easily modifiable. It may be the best solution if rebuilding the kernel at every change isn't a concern. Let's take a look at the steps. 
+
+To add a custom dt-overlay file:
+
+* First, get into the environment of the yocto project with `source poky/oe-init-build-env` to get access to the bitbake command. 
+ Later create a new layer for the dt-overlay, let's call it `meta-driver-rpi`
++
+[source, bash]
+----
+bitbake-layers create-layer meta-driver-rpi
+----
+
+
+=== Method three
+
+Even less kernel patches??
