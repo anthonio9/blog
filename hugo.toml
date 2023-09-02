@@ -86,13 +86,14 @@ paginate = 5
 
     [languages.en.params.logo]
       logoText = "anthonio9 BLOG"
-      logoHomeLink = "/"
+      logoHomeLink = "/blog"
 
     [languages.en.menu]
       [[languages.en.menu.main]]
         identifier = "dev_tips"
         name = "POSTS"
         url = "/dev_tips"
+        logoHomeLink = "/blog"
       # [[languages.en.menu.main]]
       #   identifier = "blog"
       #   name = "blog"
