@@ -20,22 +20,50 @@ Working with Yocto and RPI I've distinguished three ways of integrating kernel d
 
 Let me present the three methods to YOU:
 
-. *Patches Only* - best practices according to rasbperry pi and Yocto 
-. *Patches + external driver files* - less kernel patches?
-. *Linux Kernel Module* - even less kernel patches??
+. *<<method_1, Patches Only>>* - best practices according to rasbperry pi and Yocto 
+. *<<method_2, Patches + external driver files>>* - less kernel patches?
+. *<<method_3, Linux Kernel Module>>* - even less kernel patches??
+
+== The Driver files
 
 ====
 As I have the most experience working with audio / codec drivers, below examples will reflect that. 
 Codec drivers in the linux kernel are located in https://github.com/raspberrypi/linux/tree/rpi-6.1.y/sound/soc/codecs[`/sound/soc/codecs`]. 
 Device Trees are located in https://github.com/raspberrypi/linux/tree/rpi-6.1.y/arch/arm/boot/dts/overlays[`/arch/arm/boot/dts/overlays`]. 
-Any examples of the dts (Device Tree) files or codec drivers will also be audio related.
 ====
 
-=== Method one
+For the purpose of this tutorial, the presented driver files are extremely simple, as the goal is to learn how to include them, not how to write them.
+Below is the `hello.c` file, implementing a simple procedure known to all of us - printing a `Hello World!` message, but this time to the kernel log files, not the standard output. This file will be located in `/sound/soc/codecs`.
 
-Best practices according to rasbperry pi and Yocto 
+.hello.c
+----
+----
 
-=== Method two
+The other file is the Device Tree Overlay - `hello-overlay.dts`, which role is to let the system know about the `hello.c` driver - this will make the system probe the driver. This file will be located in `/arch/arm/boot/dts/overlays`.
+
+.hello-overlay.dts
+----
+{
+
+};
+----
+
+=== Method one: Patches Only [[method_1]]
+
+Best practices according to Rasbperry Pi and Yocto.
+
+Patches are very common amongs Yocto recipes and are the easiest to apply, however they require the most maintenance effort. This method descibes patches that add driver files to the linux kernel source and ones that modify existing *Makefiles* and *Kconfig* files.
+
+Let's start with patches adding the driver file to the kernel source. To do that the kernel source is needed - Yocto has a great tool called `bitbake` that will make getting the soruce easier. 
+
+To download the source, get into your `bitbake` environment with and run below:
+[source, bash]
+----
+devtool modify linux-raspberrypi
+----
+This command creates a new `workspace` directory in your build directory, look for `build/workspace/sources/linux-raspberrypi`. Keep in mind that bitbake adds workspace to the `build/conf/bblayers.conf`, setting the kernel to be build based on the workspace instead of the `meta-rasbperrypi` layer. We don't want this, so delete the line responsible for adding the workspace from `build/conf/bblayers.conf`.
+
+=== Method two: Patches + external driver files [[method_2]]
 
 This is my personal favorite, keeps the high integration with the kernel, leaving the driver files easily modifiable. It may be the best solution if rebuilding the kernel at every change isn't a concern. Let's take a look at the steps. 
 
@@ -44,12 +72,12 @@ To add a custom dt-overlay (**-overlay.dts*) file:
 * First, get into the environment of the Yocto project with `source poky/oe-init-build-env` to get access to the bitbake command. 
  Later create a new layer for the dt-overlay (*-overlay.dts), let's call it `meta-driver-rpi`
 +
-NOTE: Use -overlay.dts suffix for the name of the dts file, this convention is used in all the dts overlay files in /boot/dts/overlays. Otherwise Yocto may complain.
-+
 [source, bash]
 ----
 bitbake-layers create-layer meta-driver-rpi
 ----
+
+NOTE: Use -overlay.dts suffix for the name of the dts file, this convention is used in all the dts overlay files in /boot/dts/overlays. Otherwise Yocto may complain.
 
 * Import the `-overlay.dts` file to the freshly created meta-layer with `recipetool` command. It will create recipes-kernel/linux directories with a `linux-raspberrypi_%.bbappend` file. 
 If your `-overlay.dts` file is made for a specific machine, for example *raspberrypi4-64*, include it's name with the `-wm` parameter.
@@ -90,7 +118,7 @@ SRC_URI += " \
 "
 ----
 
-=== Method three
+=== Method three: Linux Kernel Module [[method_3]]
 
 The 3rd solution differs completely from the other ones as the driver code isn't anymore integrated in the kernel source. 
 
