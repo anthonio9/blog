@@ -56,12 +56,35 @@ Patches are very common amongs Yocto recipes and are the easiest to apply, howev
 
 Let's start with patches adding the driver file to the kernel source. To do that the kernel source is needed - Yocto has a great tool called `bitbake` that will make getting the soruce easier. 
 
+*Get the linux kernel source*
 To download the source, get into your `bitbake` environment with and run below:
 [source, bash]
 ----
 devtool modify linux-raspberrypi
 ----
 This command creates a new `workspace` directory in your build directory, look for `build/workspace/sources/linux-raspberrypi`. Keep in mind that bitbake adds workspace to the `build/conf/bblayers.conf`, setting the kernel to be build based on the workspace instead of the `meta-rasbperrypi` layer. We don't want this, so delete the line responsible for adding the workspace from `build/conf/bblayers.conf`.
+
+*Modify the linux kernel source*
+The first modification is to add the `hello.c` file to our source, specifically to `sound/soc/codecs/` directory. I'm pretty sure you know how to copy a file, but just to keep things clear, below is a possible set of commands with the assumption that the `hello.c` file sits next to the `build` directory in the file system hierarchy.
+
+.copy the hello.c file to the kernel source in the workspace
+[source, bash]
+----
+ls
+build hello.c hello-overlay.dts
+
+cd hello.c build/workspace/sources/linux-rasbperrypi/sound/soc/codecs/
+----
+
+Now to make the kernel notice the driver file and actually compile it, modify the `Makefile` and `Kconfig` in `sound/soc/codecs` a bit. Kernel will see the driver if there's a kernel config option binded to it available. Let's follow the kernel config option naming convention that's used for other drivers and call the option enabling the *hello* driver `CONFIG_SND_SOC_HELLO`. Append below lines to `sound/soc/codecs/Makefile`:
+
+[source]
+----
+snd-soc-hello := hello.o
+obj-$(CONFIG_SND_SOC_HELLO)	+= snd-soc-hello.o
+----
+
+
 
 === Method two: Patches + external driver files [[method_2]]
 
