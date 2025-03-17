@@ -1,0 +1,109 @@
+---
+title: "How to Edit Raspberry Pi Kernel With Yocto"
+date: 2023-09-01
+draft: false
+---
+
+= How to add drivers to Raspberry Pi Kernel with Yocto
+
+NOTE: *This article assumes the reader (YOU) is familiar with the Yocto Project, meta-raspberry-pi layer and has prior experience with Device Trees and Linux kernel drivers. If not, go and read some about it!*
+
+== What is it really about? 
+
+A modern Linux kernel driver consists of two parts: the Device Tree, which describes used resources and the driver itself. 
+These two components can either be added to the kernel source pre-build time or inserted into a running kernel instance as an external kernel module or *LKM* (Linux Kernel Module). 
+The first approach closely integrates the driver with the kernel source, but requires a kernel rebuild, whereas building an LKM is independent from the kernel buid. 
+
+== The Superior Approach
+
+Working with Yocto and RPI I've distinguished three ways of integrating kernel drivers in the system. Each way has its pros and cons and is suited best for different stages of project developement. Efficiency has always been an important factor for me, short build times and ease of applying changes is what makes living better! Expect detailed descriptions of dis / advantages of each method, hopefully YOU'll find your favorite :)
+
+Let me present the three methods to YOU:
+
+. *Patches Only* - best practices according to rasbperry pi and Yocto 
+. *Patches + external driver files* - less kernel patches?
+. *Linux Kernel Module* - even less kernel patches??
+
+====
+As I have the most experience working with audio / codec drivers, below examples will reflect that. 
+Codec drivers in the linux kernel are located in https://github.com/raspberrypi/linux/tree/rpi-6.1.y/sound/soc/codecs[`/sound/soc/codecs`]. 
+Device Trees are located in https://github.com/raspberrypi/linux/tree/rpi-6.1.y/arch/arm/boot/dts/overlays[`/arch/arm/boot/dts/overlays`]. 
+Any examples of the dts (Device Tree) files or codec drivers will also be audio related.
+====
+
+=== Method one
+
+Best practices according to rasbperry pi and Yocto 
+
+=== Method two
+
+This is my personal favorite, keeps the high integration with the kernel, leaving the driver files easily modifiable. It may be the best solution if rebuilding the kernel at every change isn't a concern. Let's take a look at the steps. 
+
+To add a custom dt-overlay (**-overlay.dts*) file:
+
+* First, get into the environment of the Yocto project with `source poky/oe-init-build-env` to get access to the bitbake command. 
+ Later create a new layer for the dt-overlay (*-overlay.dts), let's call it `meta-driver-rpi`
++
+NOTE: Use -overlay.dts suffix for the name of the dts file, this convention is used in all the dts overlay files in /boot/dts/overlays. Otherwise Yocto may complain.
++
+----
+bitbake-layers create-layer meta-driver-rpi
+----
+```bash
+bitbake-layers create-layer meta-driver-rpi
+```
+
+* Import the `-overlay.dts` file to the freshly created meta-layer with `recipetool` command. It will create recipes-kernel/linux directories with a `linux-raspberrypi_%.bbappend` file. 
+If your `-overlay.dts` file is made for a specific machine, for example *raspberrypi4-64*, include it's name with the `-wm` parameter.
++
+[source, bash]
+----
+cd meta-driver-rpi
+recipetool appendsrcfile -wm raspberrypi4-64 . virtual/kernel path/to/mydts-overlay.dts 'arch/${ARCH}/boot/dts/overlays/mydts-overlay.dts'
+----
++ 
+This command should create `meta-driver-rpi/recipes-kernel/linux/linux-raspberrypi_%.bbappend` file with contents as below.
++
+.linux-raspberrypi_%.bbappend
+[source, bash]
+----
+contents
+----
++
+The other way of achieving this is to create the file manually.
+
+* Add `KERNEL_DEVICETREE:append = " overlays/driver_dts.dtbo"` without the `-overlay` suffix to `.conf` file, that can be `meta-driver-rpi/conf/layer.conf`. This will tell Yocto to build your *-overlay.dts* file into a **.dtbo* and include it in the image.
+
+* Include the path to `meta-driver-rpi` layer in `build/conf/bblayers.conf`, to make the layer discoverable for Yocto.
+
+The advantage of this method is that all the files, except for patches that enable the driver compilation (checkout the configuration in https://github.com/raspberrypi/linux/blob/rpi-6.1.y/sound/soc/codecs/Makefile[`/sound/soc/codecs/Makefile`] and https://github.com/raspberrypi/linux/blob/rpi-6.1.y/sound/soc/codecs/Kconfig[`/sound/soc/codecs/Kconfig`]) are easily modifiable. The device tree file is at "a hands reach" in the `recipes-kernel/linux/` directory and soon I'll show YOU how to include the driver files. Patches still have to be made - follow the steps from the first method, but this time only for `Makefile` and `Kconfig`. 
+
+To add kernel driver source code to the kernel source tree:
+
+* Put the driver files into the `recipes-kernel/linux/linux-raspberrypi/` directory, patches, device tree and the `driver.cfg` files should already be there.
+* Add paths to these files to `SRC_URI` variable in `linux-raspberrypi_%.bbappend`. Don't forget to mention the destined location in the kernel source tree.
++
+.linux-raspberrypi_%.bbappend
+[source, cpp]
+----
+SRC_URI += " \
+    file://driver.cpp;subdir=git/sound/soc/codecs/       \
+    file://driver.h;subdir=git/sound/soc/codecs/         \
+"
+----
+
+=== Method three
+
+The 3rd solution differs completely from the other ones as the driver code isn't anymore integrated in the kernel source. 
+
+== Enable the device tree on boot
+
+Device Tree overlays are enabled when mentioned in the `/boot/config.txt` and just to make it easier, this can be set automatically. Add below line to the `layer.conf` of the `meta-driver-rpi` layer:
+
+[source, cpp]
+----
+RPI_EXTRA_CONFIG:append = "\ndtoverlay=driver_dts\n"
+----
+It's convienent to have the Device Tree overlay enabled automatically by the meta-layer. 
+
+Even less kernel patches??
