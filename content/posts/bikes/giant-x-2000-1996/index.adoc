@@ -1,0 +1,43 @@
+---
+title: "Giant X 2000 1996"
+date: 2025-03-31T22:06:38+02:00
+draft: false
+---
+
+.Giant X-2000
+image::x-2000-frame.jpg["This was supposed to be a picture of a Giant x-2000 frame"]
+
+[cols="1, 1, 1, 1, 1",%autowidth]
+|===
+| Component 
+| Model
+| Details
+| Price
+| Weight
+
+
+| Brakes
+| EXT-Pro Cantilever
+| 
+| 
+| 
+
+| Crankset
+| Shimano Deuro LX FC-M563
+| 170mm, 42/32/22, 94BCD
+|
+|
+
+| Front Derailleur
+| Shimano Deore LX FD-M567
+| 
+| 
+| 
+
+| Rear Derailleur
+| Shimano Deore LX RD-M565
+|
+|
+|
+
+|===

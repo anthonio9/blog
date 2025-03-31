@@ -46,10 +46,12 @@ To add a custom dt-overlay (**-overlay.dts*) file:
 +
 NOTE: Use -overlay.dts suffix for the name of the dts file, this convention is used in all the dts overlay files in /boot/dts/overlays. Otherwise Yocto may complain.
 +
-[source, bash]
 ----
 bitbake-layers create-layer meta-driver-rpi
 ----
+```bash
+bitbake-layers create-layer meta-driver-rpi
+```
 
 * Import the `-overlay.dts` file to the freshly created meta-layer with `recipetool` command. It will create recipes-kernel/linux directories with a `linux-raspberrypi_%.bbappend` file. 
 If your `-overlay.dts` file is made for a specific machine, for example *raspberrypi4-64*, include it's name with the `-wm` parameter.

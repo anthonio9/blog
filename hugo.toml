@@ -86,18 +86,18 @@ paginate = 5
 
     [languages.en.params.logo]
       logoText = "anthonio9 BLOG"
-      logoHomeLink = "/blog"
+      logoHomeLink = "/"
 
     [languages.en.menu]
       [[languages.en.menu.main]]
-        identifier = "dev_tips"
-        name = "POSTS"
-        url = "/dev_tips"
-        logoHomeLink = "/blog"
-      # [[languages.en.menu.main]]
-      #   identifier = "blog"
-      #   name = "blog"
-      #   url = "/posts"
+        identifier = "computers"
+        name = "COMPUTERS"
+        url = "/posts/computers"
+        logoHomeLink = "/"
+      [[languages.en.menu.main]]
+        identifier = "bikes"
+        name = "BIKES"
+        url = "/posts/bikes"
 
 [module]
   # In case you would like to make changes to the theme and keep it locally in you repository,
@@ -144,3 +144,4 @@ urls = [".*"]
       hardWraps = false
       unsafe = true
       xHTML = false
+

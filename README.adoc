@@ -1,1 +1,10 @@
 anthonio9 BLOG
+
+== How to start HUGO?
+
+Start the hugo server with all the articles with below:
+
+[source, bash]
+----
+hugo server -D
+----
