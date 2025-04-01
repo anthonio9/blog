@@ -90,14 +90,14 @@ pagination.pagerSize = 5
 
     [languages.en.params.logo]
       logoText = "anthonio9 BLOG"
-      logoHomeLink = "/"
+      logoHomeLink = "/blog"
 
     [languages.en.menu]
       [[languages.en.menu.main]]
         identifier = "computers"
         name = "COMPUTERS"
         url = "/posts/computers"
-        logoHomeLink = "/"
+        logoHomeLink = "/blog"
       [[languages.en.menu.main]]
         identifier = "bikes"
         name = "BIKES"
