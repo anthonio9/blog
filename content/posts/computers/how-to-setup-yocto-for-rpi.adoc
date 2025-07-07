@@ -1,0 +1,65 @@
+---
+title: "How to Setup Yocto for Rpi"
+date: 2025-07-03T22:16:50+02:00
+draft: true
+---
+
+Okay, this is me coming back to my roots from a few years back (actually just half a year, but not using a skill for this much is a lot). This is a short Yocto tutorial, that will help me setup my newest project base - RPI Yocto environment.
+
+= Yocto is cool
+
+Yes, it is. It's insanely good. However with the good parts come also a bit overwhelming ones, like its https://docs.yoctoproject.org/5.0.10/brief-yoctoprojectqs/index.html[documentation]. For starters it's much easier to follow somebody's blog and setup things quickly - like this https://medium.com/@boussettaachraf26/set-up-yocto-for-raspberry-pi-31b4a1ec4b10[medium post]. 
+
+== Package Preparations
+
+The only thing I suggest taking from the official docs as a first step, is to install below packages:
+
+[source, bash]
+----
+sudo apt install build-essential chrpath cpio debianutils diffstat file gawk gcc git iputils-ping libacl1 liblz4-tool locales python3 python3-git python3-jinja2 python3-pexpect python3-pip python3-subunit socat texinfo unzip wget xz-utils zstd
+----
+
+Things are sligthly different on arch. This is the moment when I regret the decision of choosing Manjaro as THE DISTRO of my private laptop. There's nothing good about it. Things break constantly with every update, and for the worst, every tutorial assumes Ubuntu and apt, which is not Manjaro at all. With arch and manjaro everything is a material for a story to tell.
+
+Try 
+
+----
+sudo pacman -S cpio chrpath diffstat file gawk git acl iputils lz4 glibc-locales python3 python-gitpython python-jinja python-pexpect python-pip python-subunit socat texinfo unzip wget zstd
+----
+
+`debianutils` remains not installed, as it's not available on ARCH.
+
+== Environment Setup
+
+Every Yocto project should have its own working directory, my suggestion is to create `yocto-rpi` and then a `source` subdirectory, which will contain the cloned meta-layers.
+
+----
+mkdir -p yocto_rpi/source
+cd yocto_rpi/source
+----
+
+Clone the meta layers of `poky`, `meta-raspberrypi` and `meta-openembedded`
+
+----
+git clone https://github.com/yoctoproject/poky.git
+git clone https://github.com/agherzan/meta-raspberrypi
+git clone https://github.com/openembedded/meta-openembedded.git
+----
+
+make sure that all of the meta layers have a branch of your interest checked out, not just `master`. My suggestion is to go with **scarthgap**, the current LTS.
+
+== Build Configuration
+
+Yocto will create the build config for you, just source the _poky/oe-environment_ from the `yocto_rpi` directory
+
+----
+cd ../
+source source/poky/oe-environment
+----
+
+Now, the build directory with some basic config should be there, take a look at _build/conf/local.conf_ and _build/conf/bblayers.conf_. 
+
+_local.conf_ file is a super important config file, anyway, it contains a variable `MACHINE ??= "qemux86-64"`, replace that with `MACHINE ?= "qemuarm64"`. Well, I'll replace it as my target is not a physical RPI device, but an emulated one. 
+
+
+

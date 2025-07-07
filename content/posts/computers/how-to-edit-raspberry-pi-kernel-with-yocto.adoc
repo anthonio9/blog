@@ -1,7 +1,7 @@
 ---
 title: "How to Edit Raspberry Pi Kernel With Yocto"
 date: 2023-09-01
-draft: false
+draft: true 
 ---
 
 = How to add drivers to Raspberry Pi Kernel with Yocto
