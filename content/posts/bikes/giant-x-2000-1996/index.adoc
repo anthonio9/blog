@@ -4,25 +4,55 @@ date: 2025-03-31T22:06:38+02:00
 draft: false
 ---
 
-The 90's were a wild time in the business of bikes. Full suspension has just entered the MTB world and V-brakes (introduced 1995) have rovolutionized the braking performance. The popularity of mountain bikes has slipped through to other genres, giving birth to the cross bike and a **Giant X-2000** - a bike made for cruising the roads and handling milder mountains, a bike that 20 years later would be given drop bars and be called _gravel_.
+:imagesdir: images/
+
+The 90's were a wild time in the business of bikes. Full suspension had just entered the MTB world and V-brakes (introduced 1995) rovolutionized the braking performance. The popularity of mountain bikes has slipped through to other genres, giving birth to the cross bike and a **Giant X-2000** - a bike made for cruising the roads and handling milder mountains, a bike that 20 years later would be given drop bars and be called _gravel_.
 
 == X-2000 - The Giant Cross Bike
 
-Giant X-2000 frame is similar to the other models of the 1996 catalog, the shape of the Touring, Cabriolet, Tourer, Trooper, Squadron and X-2000 seem to be all the same. A closer look will reveal that X-2000 differs in cable routing - the top tube is home to the rear break, rear and front derailleur cables, and none are passed under the bottom bracked, which is standard on the other frames. This is a common practice borrowed from the MTB models, routing the cables at the top of the bike keeps them away from the mud. The boxer fork is another unique feature, only brought to the X-2000, Cabriolet and the Trooper, these days it became sort of a holy grail, due to it's rarity and estethics clearly distinct from a regular uni fork.
+Giant X-2000 frame is similar to the other models of the 1996 catalog, the shape of the Touring, Cabriolet, Tourer, Trooper, Squadron and X-2000 seem to be all the same. A closer look will reveal that X-2000 differs in cable routing - the top tube is home to the rear break, rear and front derailleur (FD) cables, and none are passed under the bottom bracked, which is standard on the other frames. This is a common practice borrowed from the MTB models, routing the cables at the top of the bike keeps them away from the mud. The boxer fork is another unique feature, only brought to the X-2000, Cabriolet and the Trooper, these days it became sort of a holy grail, due to it's rarity and estethics clearly distinct from a regular uni fork.
 
 == X-2000 as a Modern Gravel
 
-The original bike colors inspired me to chose mostly black components, as the deore LX groupset was black, which was still unusual in the 90's - black was only slowly getting introduced to the market after decades of the silver domination. I really wanted to empasise the pink the shade of the _GIANT_  decals on the down tube with the bar tape, however finding an exact same shade of pink turned out impossible and the colors slightly differ. 
-
-=== The Drivetrain 
-
-The new configuration also features an interesting, mixed drive train. The old Deore crankset originally came with 24/34/44 chainrings, my modification involved removing the middle ring and replacing it with the outer one. That sounds crazy risky, something that no official shimano compatibility table would ever advised, but it worked - not perfectly.. but it id. What's wrong about it will ask? Well, the outer ring has to remain in the outer orientation, to keep the chain pop on it nicely, which also means that when mounted in the middle position, the crank bolts are not fully hidden in the chainring. The other issue is related to the chain width and the fact that the old crank was made for 8s chain, whilst the new setup is 10s with a much thinner chain. During the shifts a 10s chain could get trapped in the space between the chainrings. I got this solved in a simple way, by putting two spacers on the outer side of the big chainring. 
+The original bike colors inspired me to chose mostly black components, as the deore LX groupset was black, which was still unusual in the 90's - black was only slowly getting introduced to the market after decades of the silver domination. I really wanted to empasise the pink shade of the _GIANT_  decals on the down tube with the bar tape, however finding an exact same shade of pink turned out impossible and the colors slightly differ. 
 
 .Giant X-2000 Full Build
 image::x-2000-bike.jpg["This was supposed to be a picture of a Giant x-2000 frame"]
 
-// .Giant X-2000 Frame
-// image::x-2000-frame.jpg["This was supposed to be a picture of a Giant x-2000 frame"]
+== The Drivetrain - extreme 700% gear range
+
+Yes, you read that well. 700% gear range is possible and you don't need to buy a rohloff or a 12s groupset. All there is to it is a super wide range double crank and a rather standard gravel cassette of size 11-42. Put it together and Voila! The fast gear is good enough for riding around 40-45 km/h on flats, whilst the slow one makes it possible to ride up the 15%-20% uphills with an easy walking speed. No 1x can do that.
+
+=== The Drivetrain - front
+
+The new configuration also features an interesting, mixed drive train. The old Deore crankset originally came with 24/34/44 chainrings, my modification involved removing the middle ring and replacing it with the outer one. That sounds crazy risky, something that no official shimano compatibility table would ever advised, but it worked - not perfectly.. but it id. What's wrong about it will you ask? Well, the outer ring has to remain in the outer orientation, to keep the chain pop on it nicely, which also means that when mounted in the middle position, the crank bolts are not fully hidden in the chainring. The other issue is related to the chain width and the fact that the old crank was made for an 8s chain, whilst the new setup is 10s with a much thinner chain. During the shifts a 10s chain could get trapped in the space between the chainrings. I got this solved in a simple way, by putting two spacers on the outer side of the big chainring. 
+
+.Deore LX Crankset without the middle ring
+image::crankset-LX.jpg[]
+
+.Deore LX Crankset without the middle ring - sideview
+image::crankset-LX-sideview.jpg[]
+
+There are no issues with the size of the chainrings teeth regarding the chain width. Once the chain is on, everything rools smoothly. Not as smooth is the front shifting, as the 20teeth jump is on the border of the front derailleur capacity. Many times I had the chain drop on the crank arm or the inner BB spindle. This is likely caused by the super wide cage of the FD - even though its regulated by a friction shifter, an accurate movement is not an easy task.
+
+=== The Drivetrain - rear
+
+The rear of the drivetrain is a lot more on par with modern gravel bikes. I decided to splurge a bit and get the latest, greatest and prettiest GRX RD-RX820, with a capacity of at least 51 (42-11=31 + 20T front difference) teeth according to my tests and a compatibility with the Tiagra 4700 shifters. The shifters compatibility is an interesting issue, RD-RX820 is sold as a 12s derailleur, but as reported by some, it features the same pull ratio as the 11s road and gravel groupsets. And then.. the Tiagra 4700 10s shifters also feature the 11s pull ratio, however with the number of clicks limited to only 10. After having the Tiagra 4700 setup with GRX RX-RD820 I can confirm with certainity that they're compatibile and rear shifting is just fine.
+
+.GRX RD-RX820 with 44/24 front, 11-42 cassette; in big-small (upper left), big-big (upper right), small-big (bottom left), small-small (bottom right).
+image::rd-collage.jpg[]
+
+=== Cantilever Brakes
+
+Wouldn't it be cool if the drivetrain was where the issues end? Let me introduce the answer to the needs of many modern (not quite, it was modern when 2010s where still a thing) cross-country racers, the Shimano CX-50 CANTILVER BRAKES! YEAH BABY! INFINITE STOPPING POWER, GREAT MODULATION, COMPATIBLE WITH NEW SUPER SLR and SILVER!!! Or so they said.. The reality is that whilst pretty, the CX-50 brakes do not stop immediately, and it doesn't matter how low the yoke is or if the brake pads are SWISS STOP blue. The downgrade from the push-paraller XTR M960 V-Brakes is substantial, hell, not even against the simpler XT BR-T780 can they stand a chance. At least they're silver like a true jewell. The CX-50 brakes do still stop, however having ridden quite a few 12%-20% gravel downhills I can no longer recommend them to everyone. I'm seriously considering swithing to a different cantilver set with longer arms or simply switching to a mini V-brake BR-R353 on the front. The rear is fine.
+
+== Overal feelings
+
+I love this bike. I may change the brakes or the rims in the future though. With mostly modern components installed and the light tires the weight got down to around 12.5-13kg, meaning that it's not far off from a modern mid-tier gravel bike, and yet the cost and gear range performance are much better. 
+
+Thanks for reading, I'll post more soon!
+
+===
 
 [cols="1, 1, 1, 1, 1",%autowidth]
 |===
@@ -31,6 +61,12 @@ image::x-2000-bike.jpg["This was supposed to be a picture of a Giant x-2000 fram
 | Details
 | Price
 | Weight
+
+| The Bike
+| Giant X-2000 1996
+| Size 58
+| 500 PLN
+| 
 
 | Handlebars
 | Pro Discovery
@@ -121,5 +157,11 @@ image::x-2000-bike.jpg["This was supposed to be a picture of a Giant x-2000 fram
 | 11-42 10s
 | 110 PLN
 | 430g
+
+| Sum 
+| 
+| 
+| 
+| 
 
 |===
