@@ -1,0 +1,20 @@
+---
+title: "How to Handle Multiple Yocto Meta Layers with repo"
+date: 2025-07-15T20:44:22+02:00
+draft: true
+---
+
+= Yocto and its multiple layers
+
+Yocto has layers, like Ogres and onions. Each layer brings a new set of tools, functions or confiugration to the table. A custom image usually means putting together a whole stack of them, five, ten, or even more layers. Keeping all of them in sync? That's where things can get messy, unless the right tools are used.
+
+== Keep the layers in sync, but why?
+
+The meta-layers of Yocto are complex constructs - each one has multiple branches, typically one per Yocto release, and each branch comes with a shitload of commits. In practice, only the LTS (long term support) and actively maintained branches receive ongoing updates. At the moment, the LTS Yocto releases are Kirkstone (until Apr. 2026) and Scarthgap (util April 2026).
+
+When assembling a custom distribution, it's essential to treat the layer setup as a consistent snapshot in time, all layers should be pinned to compatible commits from the same release branch and roughly the same point in time.
+
+== Introducing: repo
+
+The solution to the synchronization problem is called `repo`. Similar to `git` submodules, repo can fetch specific branches and commits of multiple meta-layers based on a configuration file called __manifest.xml__. `repo` was created by *Google* to help with the management of the Android and Yocto repositories and slowly is becoming the standard tool for putting Yocto distributions together. Many popular vendors like NXP or STM already use it.
+
