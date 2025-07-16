@@ -16,5 +16,56 @@ When assembling a custom distribution, it's essential to treat the layer setup a
 
 == Introducing: repo
 
-The solution to the synchronization problem is called `repo`. Similar to `git` submodules, repo can fetch specific branches and commits of multiple meta-layers based on a configuration file called __manifest.xml__. `repo` was created by *Google* to help with the management of the Android and Yocto repositories and slowly is becoming the standard tool for putting Yocto distributions together. Many popular vendors like NXP or STM already use it.
+The solution to the synchronization problem is called `repo` - a repository management tool build on top of **Git**. Similar to `git` submodules, repo can fetch specific branches and commits of multiple meta-layers, and does all of it based on a configuration file __manifest.xml__. https://gerrit.googlesource.com/git-repo[`repo`] was created by *Google* to help with the management of the Android and Yocto repositories and slowly is becoming the standard tool for putting Yocto distributions together. Many popular vendors like NXP or STM already use it.
 
+=== Install Instructions
+
+`repo` is a python script at it's core and can be installed as such, simply by downloading a single file from google. The script will later take care of creating a repo envinronment by fetching the rest of the resources.
+
+[bash]
+----
+# manual install
+mkdir -p ~/.bin
+PATH="${HOME}/.bin:${PATH}"
+curl https://storage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo
+chmod a+rx ~/.bin/repo
+----
+
+That's not the only option though. `repo` is available in most of the package managers of the popular Linux distributions.
+
+**Debian / Ubuntu**
+
+[bash]
+----
+sudo apt-get install repo
+----
+
+**Gentoo**
+[bash]
+----
+sudo emerge dev-vcs/repo
+----
+
+=== Repo Manifest
+
+Previously mentioned repo **manifest** file is the base for the creation of a Yocto distribution. Repo requires the manifest to be hosted in a git repository, moreover, a usual good practice is to follow the Yocto versioning with branch naming in the manifest project. 
+
+For the purpose of this blog and to exercise the `repo` skills, I made a simple project on github with a manifest for raspberry-pi distribution - https://github.com/anthonio9/rpi-manifest[rpi-manifest]. The rest of the article follows the process of putting together a functional manifest file.
+
+**Synthax and Structure**
+
+Manifests are always **XML** files. Are you thinking messy tags and never ending indentations? Well, that should not be the case here, as the indentations are rather shallow, but tags are real and it's possible to use them efficiently. The manifest starts with a line stating the XML version and enconding - standard XML stuff:
+
+----
+<?xml version="1.0" encoding="UTF-8"?>
+----
+
+Then, the tag opening the manifest meta-layer configuration.
+
+----
+<manifest>
+# manifest content goes here
+</manifest>
+----
+
+That's it for now. 
