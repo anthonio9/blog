@@ -16,7 +16,7 @@ When assembling a custom distribution, it's essential to treat the layer setup a
 
 == Introducing: repo
 
-The solution to the synchronization problem is called `repo` - a repository management tool build on top of **Git**. Similar to `git` submodules, repo can fetch specific branches and commits of multiple meta-layers, and does all of it based on a configuration file __manifest.xml__. https://gerrit.googlesource.com/git-repo[`repo`] was created by *Google* to help with the management of the Android and Yocto repositories and slowly is becoming the standard tool for putting Yocto distributions together. Many popular vendors like NXP or STM already use it.
+The solution to the synchronization problem is called `repo` - a repository management tool build on top of **Git**. Similar to `git` submodules, repo can fetch specific branches and commits of multiple meta-layers, and does all of it based on a configuration file __manifest.xml__. https://gerrit.googlesource.com/git-repo[`repo`] was created by *Google* to help with the management of the Android and Yocto repositories and slowly is becoming the standard tool for putting Yocto distributions together. Many popular vendors like https://github.com/nxp-imx/imx-manifest[NXP] or STM already use it.
 
 === Install Instructions
 
@@ -60,7 +60,7 @@ Manifests are always **XML** files. Are you thinking messy tags and never ending
 <?xml version="1.0" encoding="UTF-8"?>
 ----
 
-Then, the tag opening the manifest meta-layer configuration.
+then, the tag opening the manifest meta-layer configuration follows
 
 ----
 <manifest>
@@ -68,4 +68,28 @@ Then, the tag opening the manifest meta-layer configuration.
 </manifest>
 ----
 
-That's it for now. 
+repo manifest files have a synthax rich in keywords like _revision_, _remote_, _fetch_, _path_, _project_ and a few more, which are described in detail in the https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md[Manifest Format documentation] provided by Google. As this article is based on my own work experience, only the synthax options I have personally used are introduced below. 
+
+**Remote**
+
+The tag `remote` assigns a name to a git URL. Intuitively, the name is set with `name` attribute, and the URL with `fetch`. The URL should be a path to the mother project, or a group which members are specified further down with the `project` tags. 
+
+----
+<remote name="yp"          fetch="https://git.yoctoproject.org"/>
+----
+
+**Project**
+
+`project` tag describes a git repository to be cloned. A few attributes go along with it, to provide the detailed info about how the repository should be cloned.
+
+* `name` - name of the git project. The value of this attribute is appended to the URL specified in the `remote` attribute, followed by _.git_.
+* `remote` - the parent URL of the requested git project. This could be either the group URL or user main workspace, just like in the `remote` tag. What's more is that the `remote` tags can be referenced here, by passing the `remote` tag `name` value, this is later expanded into the full URL.
+* `path` - the destination path of the cloned project, the path is relative to the top directory of the repo client
+* `revision` - name of the Git branch the manifest wants to track for this project, a commit hash should also work.
+* `upstream` - 
+
+**Linkfile**
+
+`linkfile` tag lives inside of the manifest tags and is used to specify symbolic linking to the files provided by the project. The file location in the source git repository is set with `src` attribute and the target location in the local filetree is specified with `dest` attribute. Both paths are relative. A single `project` tag may be a home to multiple `linkfile` tags.
+
+
