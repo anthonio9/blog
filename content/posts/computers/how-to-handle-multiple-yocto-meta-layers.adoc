@@ -1,7 +1,7 @@
 ---
 title: "How to Handle Multiple Yocto Meta Layers with repo"
 date: 2025-07-15T20:44:22+02:00
-draft: true
+draft: false
 ---
 
 = Yocto and its multiple layers
@@ -20,7 +20,7 @@ The solution to the synchronization problem is called `repo` - a repository mana
 
 === Install Instructions
 
-`repo` is a python script at it's core and can be installed as such, simply by downloading a single file from google. The script will later take care of creating a repo envinronment by fetching the rest of the resources.
+`repo` is a python script at it's core and can be installed as such, simply by downloading a single file from google. The script will then take care of creating a repo envinronment by fetching the rest of the resources.
 
 [bash]
 ----
@@ -48,10 +48,9 @@ sudo emerge dev-vcs/repo
 
 === Repo Manifest
 
-Previously mentioned repo **manifest** file is the base for the creation of a Yocto distribution. Repo requires the manifest to be hosted in a git repository, moreover, a usual good practice is to follow the Yocto versioning with branch naming in the manifest project. 
+The previously mentioned repo **manifest** file serves as the foundation of a custom Yocto distribution. The manifest itself must be hosted in a Git repository. A common best practice is to align the manifest’s branch names with Yocto release names - for example, use branches like `kirkstone` or `scarthgap` to reflect the corresponding Yocto version.
 
-For the purpose of this blog and to exercise the `repo` skills, I made a simple project on github with a manifest for raspberry-pi distribution - https://github.com/anthonio9/rpi-manifest[rpi-manifest]. The rest of the article follows the process of putting together a functional manifest file.
-
+For the purpose of this blog and to exercise `repo` skills, I made a simple project on github with a manifest for a Raspberry Pi-based Yocto distribution: https://github.com/anthonio9/rpi-manifest[rpi-manifest]. This repository contains the complete manifest used in this example, and the rest of the article walks through the process of building it step by step
 **Synthax and Structure**
 
 Manifests are always **XML** files. Are you thinking messy tags and never ending indentations? Well, that should not be the case here, as the indentations are rather shallow, but tags are real and it's possible to use them efficiently. The manifest starts with a line stating the XML version and enconding - standard XML stuff:
@@ -72,7 +71,7 @@ repo manifest files have a synthax rich in keywords like _revision_, _remote_, _
 
 **Remote**
 
-The tag `remote` assigns a name to a git URL. Intuitively, the name is set with `name` attribute, and the URL with `fetch`. The URL should be a path to the mother project, or a group which members are specified further down with the `project` tags. 
+The tag `remote` assigns a name to a git URL - think of it as a shortcut to that URL. Intuitively, the name is defined with the `name` attribute, and the URL itself with `fetch`. The URL should point to the location of a parent project or a group, which members are specified further down with the `project` tags. 
 
 ----
 <remote name="yp"          fetch="https://git.yoctoproject.org"/>
@@ -84,12 +83,64 @@ The tag `remote` assigns a name to a git URL. Intuitively, the name is set with 
 
 * `name` - name of the git project. The value of this attribute is appended to the URL specified in the `remote` attribute, followed by _.git_.
 * `remote` - the parent URL of the requested git project. This could be either the group URL or user main workspace, just like in the `remote` tag. What's more is that the `remote` tags can be referenced here, by passing the `remote` tag `name` value, this is later expanded into the full URL.
-* `path` - the destination path of the cloned project, the path is relative to the top directory of the repo client
+* `path` - the destination path of the cloned project, the path is relative to the top directory of the repo client. Usually the format is `"sources/<project-name>"`
 * `revision` - name of the Git branch the manifest wants to track for this project, a commit hash should also work.
-* `upstream` - 
+* `upstream` - according to the docs it does not differ that much from `revision`, but to my understanding it should be set to the fetched branch name.
+
+----
+<project name="poky" remote="yp" path="sources/poky" revision="792d18b4cb2451b00280641403e6eaf37bd6e53f" upstream="scarthgap" />
+<project name="meta-raspberrypi" remote="rpi" path="sources/meta-raspberrypi" revision="8e9ec2685a902038d1d6ad20f0821ee5655432a9" upstream="scarthgap" />
+<project name="meta-openembedded" remote="oe" path="sources/meta-openembedded" revision="e8fd97d86af86cdcc5a6eb3f301cbaf6a2084943" upstream="walnascar" />
+----
 
 **Linkfile**
 
 `linkfile` tag lives inside of the manifest tags and is used to specify symbolic linking to the files provided by the project. The file location in the source git repository is set with `src` attribute and the target location in the local filetree is specified with `dest` attribute. Both paths are relative. A single `project` tag may be a home to multiple `linkfile` tags.
+
+
+=== Fetch the repositories with repo
+
+Now, that the manifest file is ready and pushed to its git repository, use `repo init` to create the yocto environment on a local linux machine. 
+
+----
+repo init -u https://github.com/anthonio9/rpi-manifest -b scarthgap -m rpi-6.12.25.xml
+repo sync
+----
+
+reported output of a successful `repo sync`should be like below:
+
+----
+Syncing: 100% (3/3), done in 1m40.918s
+repo sync has finished successfully.
+----
+
+Now, verify the content of the sources directory, make sure it contains all three meta layers. 
+
+[bash, shell]
+----
+[antoni@supercomputer sources]$ tree -L 1
+.
+├── meta-openembedded
+├── meta-raspberrypi
+└── poky
+
+4 directories, 0 files
+----
+
+**CONGRATULATIONS! Yocto sources are fetched!**
+
+yay! Yeah, this is it. The most basic repo manifest, but enough to get you started on this Yocto journey :)
+
+== Extra stuff
+
+This was good, but there's still a lot to learn. In the next chapters of my blog, more steps on Yocto are to be covered, so stay tuned. 
+But if you can't wait already, then I suggest you learn:
+
+* how to shallow clone a git repository with repo, to speed up the download times and descrease the used disk space
+* how to configure yocto build directory
+* how to store build configuration files in the repo manifest repository and copy them to the _build_ directory
+
+I hope this was useful!
+Thanks for reading, more will come soon.
 
 
