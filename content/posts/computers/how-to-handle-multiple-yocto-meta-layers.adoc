@@ -7,7 +7,7 @@ description: "Yocto has layers, like Ogres and onions. Keeping all of them in sy
 
 = Yocto and its multiple layers
 
-Yocto has layers, like Ogres and onions. Each layer brings a new set of tools, functions or confiugration to the table. A custom image usually means putting together a whole stack of them, five, ten, or even more layers. Keeping all of them in sync? That's where things can get messy, unless the right tools are used.
+Yocto has layers, like Ogres and onions. Each layer brings a new set of tools, functions or configuration to the table. A custom image usually means putting together a whole stack of them, five, ten, or even more layers. Keeping all of them in sync? That's where things can get messy, unless the right tools are used.
 
 == Keep the layers in sync, but why?
 
@@ -21,7 +21,7 @@ The solution to the synchronization problem is called `repo` - a repository mana
 
 === Install Instructions
 
-`repo` is a python script at it's core and can be installed as such, simply by downloading a single file from google. The script will then take care of creating a repo envinronment by fetching the rest of the resources.
+`repo` is a python script at its core and can be installed as such simply by downloading a single file from google. The script will then take care of creating a repo environment by fetching the rest of the resources.
 
 [bash]
 ----
@@ -54,7 +54,7 @@ The previously mentioned repo **manifest** file serves as the foundation of a cu
 For the purpose of this blog and to exercise `repo` skills, I made a simple project on github with a manifest for a Raspberry Pi-based Yocto distribution: https://github.com/anthonio9/rpi-manifest[rpi-manifest]. This repository contains the complete manifest used in this example, and the rest of the article walks through the process of building it step by step
 **Synthax and Structure**
 
-Manifests are always **XML** files. Are you thinking messy tags and never ending indentations? Well, that should not be the case here, as the indentations are rather shallow, but tags are real and it's possible to use them efficiently. The manifest starts with a line stating the XML version and enconding - standard XML stuff:
+Manifests are always **XML** files. Are you thinking messy tags and never ending indentations? Well, that should not be the case here, as the indentations are rather shallow, but tags are real and it's possible to use them efficiently. The manifest starts with a line stating the XML version and encoding - standard XML stuff:
 
 ----
 <?xml version="1.0" encoding="UTF-8"?>
@@ -68,7 +68,7 @@ then, the tag opening the manifest meta-layer configuration follows
 </manifest>
 ----
 
-repo manifest files have a synthax rich in keywords like _revision_, _remote_, _fetch_, _path_, _project_ and a few more, which are described in detail in the https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md[Manifest Format documentation] provided by Google. As this article is based on my own work experience, only the synthax options I have personally used are introduced below. 
+repo manifest files have a syntax rich in keywords like _revision_, _remote_, _fetch_, _path_, _project_ and a few more, which are described in detail in the https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md[Manifest Format documentation] provided by Google. As this article is based on my own work experience, only the syntax options I have personally used are introduced below. 
 
 **Remote**
 
@@ -96,7 +96,7 @@ The tag `remote` assigns a name to a git URL - think of it as a shortcut to that
 
 **Linkfile**
 
-`linkfile` tag lives inside of the manifest tags and is used to specify symbolic linking to the files provided by the project. The file location in the source git repository is set with `src` attribute and the target location in the local filetree is specified with `dest` attribute. Both paths are relative. A single `project` tag may be a home to multiple `linkfile` tags.
+`linkfile` tag lives inside the manifest tags and is used to specify symbolic linking to the files provided by the project. The file location in the source git repository is set with `src` attribute and the target location in the local filetree is specified with `dest` attribute. Both paths are relative. A single `project` tag may be a home to multiple `linkfile` tags.
 
 
 === Fetch the repositories with repo
@@ -137,9 +137,9 @@ yay! Yeah, this is it. The most basic repo manifest, but enough to get you start
 This was good, but there's still a lot to learn. In the next chapters of my blog, more steps on Yocto are to be covered, so stay tuned. 
 But if you can't wait already, then I suggest you learn:
 
-* how to shallow clone a git repository with repo, to speed up the download times and descrease the used disk space
-* how to configure yocto build directory
-* how to store build configuration files in the repo manifest repository and copy them to the _build_ directory
+* How to shallow clone a git repository with repo, to speed up the download times and decrease the used disk space
+* How to configure Yocto build directory
+* How to store build configuration files in the repo manifest repository and copy them to the _build_ directory
 
 I hope this was useful!
 Thanks for reading, more will come soon.
