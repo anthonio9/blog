@@ -24,7 +24,7 @@ Things are sligthly different on arch. This is the moment when I regret the deci
 Try 
 
 ----
-sudo pacman -S cpio chrpath diffstat file gawk git acl iputils lz4 glibc-locales python3 python-gitpython python-jinja python-pexpect python-pip python-subunit socat texinfo unzip wget zstd
+sudo pacman -S cpio chrpath diffstat file gawk git acl iputils lz4 glibc-locales python3 python-gitpython python-jinja python-pexpect python-pip python-subunit socat texinfo unzip wget zstd rpcsvc-proto
 ----
 
 `debianutils` remains not installed, as it's not available on ARCH.
@@ -54,12 +54,71 @@ Yocto will create the build config for you, just source the _poky/oe-environment
 
 ----
 cd ../
-source source/poky/oe-environment
+source sources/poky/oe-init-build-env
 ----
 
 Now, the build directory with some basic config should be there, take a look at _build/conf/local.conf_ and _build/conf/bblayers.conf_. 
 
 _local.conf_ file is a super important config file, anyway, it contains a variable `MACHINE ??= "qemux86-64"`, replace that with `MACHINE ?= "qemuarm64"`. Well, I'll replace it as my target is not a physical RPI device, but an emulated one. 
 
+=== BBLAYERS.CONF
 
+The generated _bblayers.conf_ file should now look like below, with three layer paths assigned to a `BBLAYERS` variable:
+
+----
+# POKY_BBLAYERS_CONF_VERSION is increased each time build/conf/bblayers.conf
+# changes incompatibly
+POKY_BBLAYERS_CONF_VERSION = "2"
+
+BBPATH = "${TOPDIR}"
+BBFILES ?= ""
+
+BBLAYERS ?= " \
+  /home/antoni/Projects/yocto-rpi-manifest-test/sources/poky/meta \
+  /home/antoni/Projects/yocto-rpi-manifest-test/sources/poky/meta-poky \
+  /home/antoni/Projects/yocto-rpi-manifest-test/sources/poky/meta-yocto-bsp \
+  "
+----
+
+These meta-layers paths are full paths that include the home directory user and many more obsolete details. My advice is to keep the paths relative to the parent directory of `sources` and `build`.
+
+=== Build a bitbake image
+
+Now it's finally the time to launch the build process. Chose one of the images that were displayed just after sourcing the poky environment, `core-image-minimal` is a good start. Use `bitbake` to initiate the build:
+
+----
+bitbake core-image-minimal
+----
+
+What you should see right after is below:
+----
+$ bitbake core-image-minimal
+WARNING: Host distribution "manjaro" has not been validated with this version of the build system; you may possibly experience unexpected failures. It is recommended that you use a tested distribution.
+Loading cache: 100% |                                                                                                                                                                                                        | ETA:  --:--:--
+Loaded 0 entries from dependency cache.
+Parsing recipes: 100% |#######################################################################################################################################################################################################| Time: 0:02:51
+Parsing of 920 .bb files complete (0 cached, 920 parsed). 1878 targets, 58 skipped, 0 masked, 0 errors.
+NOTE: Resolving any missing task queue dependencies
+
+Build Configuration:
+BB_VERSION           = "2.8.0"
+BUILD_SYS            = "x86_64-linux"
+NATIVELSBSTRING      = "manjaro"
+TARGET_SYS           = "aarch64-poky-linux"
+MACHINE              = "qemuarm64"
+DISTRO               = "poky"
+DISTRO_VERSION       = "5.0.11"
+TUNE_FEATURES        = "aarch64 crc cortexa57"
+TARGET_FPU           = ""
+meta                 
+meta-poky            
+meta-yocto-bsp       = "HEAD:792d18b4cb2451b00280641403e6eaf37bd6e53f"
+
+NOTE: Fetching uninative binary shim http://downloads.yoctoproject.org/releases/uninative/4.7/x86_64-nativesdk-libc-4.7.tar.xz;sha256sum=5800d4e9a129d1be09cf548918d25f74e91a7c1193ae5239d5b0c9246c486d2c (will check PREMIRRORS first)
+Sstate summary: Wanted 1849 Local 0 Mirrors 0 Missed 1849 Current 0 (0% match, 0% complete)##############################################################################################################                     | ETA:  0:00:01
+Initialising tasks: 100% |####################################################################################################################################################################################################| Time: 0:00:17
+NOTE: Executing Tasks
+----
+
+The only thing, that's left is to wait, as the initial build process may take a few hours to complete.
 
