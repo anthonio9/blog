@@ -122,3 +122,103 @@ NOTE: Executing Tasks
 
 The only thing, that's left is to wait, as the initial build process may take a few hours to complete.
 
+== Use Docker
+
+Docker makes things a lot easier, especially on arch distros, which may not exactly align with what Yocto expects.
+
+Setup a docker file:
+
+.dockerfile
+----
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install essential Yocto build dependencies
+RUN apt-get update && apt-get install -y \
+  sudo gawk wget git-core diffstat unzip texinfo gcc \
+  build-essential chrpath socat cpio xz-utils \
+  python3 python3-pip python3-pexpect python3-git \
+  python3-jinja2 python3-pexpect python3-subunit \
+  debianutils iputils-ping libssl-dev libncurses5-dev \
+  locales zstd xterm file libacl1 liblz4-tool \
+  curl rsync vim && \
+  rm -rf /var/lib/apt/lists/*
+
+RUN git config --global user.name "Your Name" && \
+    git config --global user.email "you@example.com"
+
+# Set up locale
+RUN locale-gen en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+
+# Create non-root user to match host UID/GID
+ARG UID=1000
+ARG GID=1000
+RUN groupadd -g ${GID} builder && useradd -m -u ${UID} -g ${GID} -s /bin/bash builder
+RUN echo "builder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Switch to builder
+USER builder
+WORKDIR /home/builder
+
+# Install repo
+RUN mkdir -p ~/.bin && \
+    curl https://storage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo && \
+    chmod a+x ~/.bin/repo
+ENV PATH="/home/builder/.bin:${PATH}"
+
+# Create workspace folder
+RUN mkdir -p /home/builder/workspace
+WORKDIR /home/builder/workspace
+
+# Copy entrypoint script
+COPY --chown=builder:builder entrypoint.sh /home/builder/entrypoint.sh
+ENTRYPOINT ["/bin/bash", "/home/builder/entrypoint.sh"]
+----
+
+Setup an _entrypoint.sh_ script with that uses the `rpi-manifest` mentioned in another blog of mine.
+
+.entrypoint.sh
+----
+#!/bin/bash
+set -e
+
+YOCTO_REPO_URL="https://github.com/anthonio9/rpi-manifest.git"
+YOCTO_DIR="/home/builder/workspace/rpi"
+
+if [ ! -d "$YOCTO_DIR" ]; then
+  echo ">>> Cloning Yocto manifest..."
+  mkdir -p "$YOCTO_DIR"
+  cd "$YOCTO_DIR"
+  repo init -u "$YOCTO_REPO_URL" -b scarthgap -m rpi-6.12.25.xml
+  repo sync -j$(nproc)
+fi
+
+cd "$YOCTO_DIR"
+exec bash
+----
+
+Finally build the image with docker:
+
+----
+DOCKER_BUILDKIT=1 docker build \
+  --build-arg UID=$(id -u) \
+  --build-arg GID=$(id -g) \
+  -t yocto-dev .
+----
+
+Run the image and give it a new name `yocto-dev-container`:
+[bash]
+----
+docker run -it \
+  --name yocto-dev-container \
+  -v ~/Projects/yocto-docker-api:/home/builder/workspace \
+  yocto-dev
+----
+
+The image is saved now, so in case of any restarts, use below:
+----
+docker start -ai yocto-dev-container
+----
