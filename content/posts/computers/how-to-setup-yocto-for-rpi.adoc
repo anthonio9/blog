@@ -59,7 +59,7 @@ source sources/poky/oe-init-build-env
 
 Now, the build directory with some basic config should be there, take a look at _build/conf/local.conf_ and _build/conf/bblayers.conf_. 
 
-_local.conf_ file is a super important config file, anyway, it contains a variable `MACHINE ??= "qemux86-64"`, replace that with `MACHINE ?= "qemuarm64"`. Well, I'll replace it as my target is not a physical RPI device, but an emulated one. 
+_local.conf_ file is a super important config file, anyway, it contains a variable `MACHINE ??= "qemux86-64"`, replace that with `MACHINE ?= "raspberrypi4-64"` or `"raspberrypi5"` depending on the type of RPI board you own.
 
 === BBLAYERS.CONF
 
@@ -81,6 +81,28 @@ BBLAYERS ?= " \
 ----
 
 These meta-layers paths are full paths that include the home directory user and many more obsolete details. My advice is to keep the paths relative to the parent directory of `sources` and `build`.
+
+The file with relative paths and all the usual layers would present as below:
+
+----
+# POKY_BBLAYERS_CONF_VERSION is increased each time build/conf/bblayers.conf
+# changes incompatibly
+POKY_BBLAYERS_CONF_VERSION = "2"
+
+BBPATH = "${TOPDIR}"
+BBFILES ?= ""
+
+BBLAYERS ?= " \
+  ${TOPDIR}/../sources/poky/meta \
+  ${TOPDIR}/../sources/poky/meta-poky \
+  ${TOPDIR}/../sources/poky/meta-yocto-bsp \
+  ${TOPDIR}/../sources/meta-raspberrypi \
+  ${TOPDIR}/../sources/meta-openembedded/meta-oe \
+  ${TOPDIR}/../sources/meta-openembedded/meta-multimedia \
+  ${TOPDIR}/../sources/meta-openembedded/meta-networking \
+  ${TOPDIR}/../sources/meta-openembedded/meta-python \
+  "
+----
 
 === Build a bitbake image
 
@@ -120,105 +142,4 @@ Initialising tasks: 100% |######################################################
 NOTE: Executing Tasks
 ----
 
-The only thing, that's left is to wait, as the initial build process may take a few hours to complete.
-
-== Use Docker
-
-Docker makes things a lot easier, especially on arch distros, which may not exactly align with what Yocto expects.
-
-Setup a docker file:
-
-.dockerfile
-----
-FROM ubuntu:22.04
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install essential Yocto build dependencies
-RUN apt-get update && apt-get install -y \
-  sudo gawk wget git-core diffstat unzip texinfo gcc \
-  build-essential chrpath socat cpio xz-utils \
-  python3 python3-pip python3-pexpect python3-git \
-  python3-jinja2 python3-pexpect python3-subunit \
-  debianutils iputils-ping libssl-dev libncurses5-dev \
-  locales zstd xterm file libacl1 liblz4-tool \
-  curl rsync vim && \
-  rm -rf /var/lib/apt/lists/*
-
-RUN git config --global user.name "Your Name" && \
-    git config --global user.email "you@example.com"
-
-# Set up locale
-RUN locale-gen en_US.UTF-8
-ENV LANG=en_US.UTF-8
-ENV LC_ALL=en_US.UTF-8
-
-# Create non-root user to match host UID/GID
-ARG UID=1000
-ARG GID=1000
-RUN groupadd -g ${GID} builder && useradd -m -u ${UID} -g ${GID} -s /bin/bash builder
-RUN echo "builder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
-# Switch to builder
-USER builder
-WORKDIR /home/builder
-
-# Install repo
-RUN mkdir -p ~/.bin && \
-    curl https://storage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo && \
-    chmod a+x ~/.bin/repo
-ENV PATH="/home/builder/.bin:${PATH}"
-
-# Create workspace folder
-RUN mkdir -p /home/builder/workspace
-WORKDIR /home/builder/workspace
-
-# Copy entrypoint script
-COPY --chown=builder:builder entrypoint.sh /home/builder/entrypoint.sh
-ENTRYPOINT ["/bin/bash", "/home/builder/entrypoint.sh"]
-----
-
-Setup an _entrypoint.sh_ script with that uses the `rpi-manifest` mentioned in another blog of mine.
-
-.entrypoint.sh
-----
-#!/bin/bash
-set -e
-
-YOCTO_REPO_URL="https://github.com/anthonio9/rpi-manifest.git"
-YOCTO_DIR="/home/builder/workspace/rpi"
-
-if [ ! -d "$YOCTO_DIR" ]; then
-  echo ">>> Cloning Yocto manifest..."
-  mkdir -p "$YOCTO_DIR"
-  cd "$YOCTO_DIR"
-  repo init -u "$YOCTO_REPO_URL" -b scarthgap -m rpi-6.12.25.xml
-  repo sync -j$(nproc)
-fi
-
-cd "$YOCTO_DIR"
-exec bash
-----
-
-Finally build the image with docker:
-
-----
-DOCKER_BUILDKIT=1 docker build \
-  --build-arg UID=$(id -u) \
-  --build-arg GID=$(id -g) \
-  -t yocto-dev .
-----
-
-Run the image and give it a new name `yocto-dev-container`:
-[bash]
-----
-docker run -it \
-  --name yocto-dev-container \
-  -v ~/Projects/yocto-docker-api:/home/builder/workspace \
-  yocto-dev
-----
-
-The image is saved now, so in case of any restarts, use below:
-----
-docker start -ai yocto-dev-container
-----
+The only thing left is to wait, as the initial build process may take a few hours to complete.

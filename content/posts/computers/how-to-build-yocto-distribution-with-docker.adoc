@@ -1,0 +1,127 @@
+---
+title: "How to Build a Yocto Distribution With Docker"
+date: 2025-08-26T22:35:40+02:00
+draft: true
+---
+
+In the previous blog posts a basic setup for a RPI distribution with Yocto and a way to handle multiple layers synchronized with repo manifests were already discussed. This article is a step forward, making use of the knownledge gathered so far, yet allowing for even a bit more automatization, all thanks to the Docker Containers.
+
+== Use Docker
+
+Docker makes things a lot easier, especially on arch distros, which may not exactly align with what Yocto expects. A containerized image is independent from the host platform in terms of OS architecture, meaning that a debian system can be run inside of a container and hosted on an arch OS. All of the packages required by Yocto are installed in the container. 
+A contenerized image can also take advante of a manifest file and follow other automatized instructions, usually formed into a bash script. 
+
+=== Docker Container Setup
+
+Yocto is quite extensive with the list of required packages, therefore it makes sense to create a custom made Docker image. The system of choice here is Ubuntu 22.04, as it's the last version supported by Yocto. This makes it possible to simply copy & paste all of the packages to install straight from the Yocto Project documentation. The packages and tools present in the image are configured in the *dockerfile*.
+
+Setup a docker file:
+
+.dockerfile
+----
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install essential Yocto build dependencies
+RUN apt-get update && apt-get install -y \
+  sudo gawk wget git-core diffstat unzip texinfo gcc \
+  build-essential chrpath socat cpio xz-utils \
+  python3 python3-pip python3-pexpect python3-git \
+  python3-jinja2 python3-pexpect python3-subunit \
+  debianutils iputils-ping libssl-dev libncurses5-dev \
+  locales zstd xterm file libacl1 liblz4-tool \
+  curl rsync vim && \
+  rm -rf /var/lib/apt/lists/*
+
+RUN git config --global user.name "Your Name" && \
+    git config --global user.email "you@example.com"
+
+# Set up locale
+RUN locale-gen en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+
+# Create non-root user to match host UID/GID
+ARG UID=1000
+ARG GID=1000
+RUN groupadd -g ${GID} builder && useradd -m -u ${UID} -g ${GID} -s /bin/bash builder
+RUN echo "builder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Switch to builder
+USER builder
+WORKDIR /home/builder
+
+# Install repo
+RUN mkdir -p ~/.bin && \
+    curl https://storage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo && \
+    chmod a+x ~/.bin/repo
+ENV PATH="/home/builder/.bin:${PATH}"
+
+# Create workspace folder
+RUN mkdir -p /home/builder/workspace
+WORKDIR /home/builder/workspace
+
+# Copy entrypoint script
+COPY --chown=builder:builder entrypoint.sh /home/builder/entrypoint.sh
+ENTRYPOINT ["/bin/bash", "/home/builder/entrypoint.sh"]
+----
+
+Setup an _entrypoint.sh_ script with that uses the `rpi-manifest` mentioned in another blog of mine.
+
+.entrypoint.sh
+----
+#!/bin/bash
+set -e
+
+YOCTO_REPO_URL="https://github.com/anthonio9/rpi-manifest.git"
+YOCTO_DIR="/home/builder/workspace/rpi"
+
+if [ ! -d "$YOCTO_DIR" ]; then
+  echo ">>> Cloning Yocto manifest..."
+  mkdir -p "$YOCTO_DIR"
+  cd "$YOCTO_DIR"
+  repo init -u "$YOCTO_REPO_URL" -b scarthgap -m rpi-6.12.25.xml
+  repo sync -j$(nproc)
+fi
+
+cd "$YOCTO_DIR"
+exec bash
+----
+
+In case of a need to build the image immediately after the container is running, 
+replace `exec bash` with commands mentioned in the section below - _Build yocto with a docker container_.
+
+Finally build the contenerized image with docker:
+
+----
+DOCKER_BUILDKIT=1 docker build \
+  --build-arg UID=$(id -u) \
+  --build-arg GID=$(id -g) \
+  -t yocto-dev .
+----
+
+Run the container and give it a new name `yocto-dev-container`:
+[bash]
+----
+docker run -it \
+  --name yocto-dev-container \
+  -v ~/Projects/yocto-docker-api:/home/builder/workspace \
+  yocto-dev
+----
+
+The container image is saved now, so in case of any restarts, use below:
+
+----
+docker start -ai yocto-dev-container
+----
+
+=== Build yocto with a docker container
+
+Now that the `yocto-dev-container` docker image is ready, start it with `docker start -ai yocto-dev-container`. 
+Run the two familiar commands to build the yocto RPI image:
+
+----
+source sources/poky/oe-init-build-env
+bitbake core-image-minimal
+----
