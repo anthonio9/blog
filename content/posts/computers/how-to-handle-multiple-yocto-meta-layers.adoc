@@ -138,8 +138,7 @@ This was good, but there's still a lot to learn. In the next chapters of my blog
 But if you can't wait already, then I suggest you learn:
 
 * How to shallow clone a git repository with repo, to speed up the download times and decrease the used disk space
-* How to configure Yocto build directory
-* How to store build configuration files in the repo manifest repository and copy them to the _build_ directory
+* How to configure Yocto build directory, or you could also read my link:{{< relref "how-to-setup-yocto-for-rpi.adoc" >}}#build-configuration[other article] that shortly talks about it
 
 I hope this was useful!
 Thanks for reading, more will come soon.

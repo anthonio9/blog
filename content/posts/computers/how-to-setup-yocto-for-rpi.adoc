@@ -1,11 +1,11 @@
 ---
-title: "How to Setup Yocto for Rpi"
+title: "How to Set Up Yocto for Raspberry Pi"
 date: 2025-07-03T22:16:50+02:00
-draft: true
+draft: false
+description: "This is a short Yocto tutorial to help me (and you) set up a new Raspberry Pi Yocto environment. We’ll gather the meta layers, pick the target board, and finally build a custom Raspberry Pi Linux distribution."
 ---
 
-Okay, this is me coming back to my roots from a few years back (actually just half a year, but not using a skill for this much is a lot). This is a short Yocto tutorial, that will help me setup my newest project base - RPI Yocto environment.
-
+Okay, this is me coming back to my roots from a few years back (well, actually just half a year, but leaving a skill unused that long feels like ages). This is a short Yocto tutorial to help me (and you) set up a new Raspberry Pi Yocto environment. We’ll gather the meta layers, pick the target board, and finally build a custom Raspberry Pi Linux distribution.
 = Yocto is cool
 
 Yes, it is. It's insanely good. However with the good parts come also a bit overwhelming ones, like its https://docs.yoctoproject.org/5.0.10/brief-yoctoprojectqs/index.html[documentation]. For starters it's much easier to follow somebody's blog and setup things quickly - like this https://medium.com/@boussettaachraf26/set-up-yocto-for-raspberry-pi-31b4a1ec4b10[medium post]. 
@@ -48,7 +48,10 @@ git clone https://github.com/openembedded/meta-openembedded.git
 
 make sure that all of the meta layers have a branch of your interest checked out, not just `master`. My suggestion is to go with **scarthgap**, the current LTS.
 
-== Build Configuration
+The step of setting up the sources should at some point be automatized with the help of a `repo` tool, described in detail in article link:{{< relref "how-to-handle-multiple-yocto-meta-layers.adoc" >}}[_How to Handle Multiple Yocto Meta Layers with repo_].
+
+
+== Build Configuration [[build-configuration]]
 
 Yocto will create the build config for you, just source the _poky/oe-environment_ from the `yocto_rpi` directory
 
@@ -80,7 +83,7 @@ BBLAYERS ?= " \
   "
 ----
 
-These meta-layers paths are full paths that include the home directory user and many more obsolete details. My advice is to keep the paths relative to the parent directory of `sources` and `build`.
+These meta-layers paths are full paths that include the home directory user and many more obsolete details. My advice is to keep the paths relative to the parent directory of `sources` and `build`, use the `TOPDIR` variable pointing to the `build` directory to achieve that. `TOPDIR` is https://docs.yoctoproject.org/bitbake/2.12/bitbake-user-manual/bitbake-user-manual-ref-variables.html#term-TOPDIR[automatically set by bitbake]. 
 
 The file with relative paths and all the usual layers would present as below:
 
@@ -142,4 +145,4 @@ Initialising tasks: 100% |######################################################
 NOTE: Executing Tasks
 ----
 
-The only thing left is to wait, as the initial build process may take a few hours to complete.
+The only thing left is to wait, as the initial build process may take a few hours to complete. Once ready, the image should be found somewhere in _build/tmp/deploy/images/raspberrypi4-64/_ directory.
