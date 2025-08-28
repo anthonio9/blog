@@ -1,5 +1,5 @@
 ---
-title: "How to Handle Multiple Yocto Meta Layers with repo"
+title: "Yocto II: How to Handle Multiple Yocto Meta Layers with repo"
 date: 2025-07-15T20:44:22+02:00
 draft: false
 description: "Yocto has layers, like Ogres and onions. Keeping all of them in sync? That's where things can get messy, unless the right tools are used."

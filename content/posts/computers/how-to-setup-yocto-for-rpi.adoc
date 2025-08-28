@@ -1,5 +1,5 @@
 ---
-title: "How to Set Up Yocto for Raspberry Pi"
+title: "Yocto I: How to Set Up Yocto for Raspberry Pi"
 date: 2025-07-03T22:16:50+02:00
 draft: false
 description: "This is a short Yocto tutorial to help me (and you) set up a new Raspberry Pi Yocto environment. We’ll gather the meta layers, pick the target board, and finally build a custom Raspberry Pi Linux distribution."
@@ -145,4 +145,4 @@ Initialising tasks: 100% |######################################################
 NOTE: Executing Tasks
 ----
 
-The only thing left is to wait, as the initial build process may take a few hours to complete. Once ready, the image should be found somewhere in _build/tmp/deploy/images/raspberrypi4-64/_ directory.
+The only thing left is to wait, as the initial build process may take a few hours to complete. Once ready, the image should be found somewhere in _build/tmp/deploy/images/raspberrypi4-64/_ directory under the name of _core-image-minimal-raspberrypi4-64.rootfs.wic.bz2_.
