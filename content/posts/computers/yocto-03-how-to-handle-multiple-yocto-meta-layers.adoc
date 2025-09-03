@@ -1,5 +1,5 @@
 ---
-title: "Yocto II: How to Handle Multiple Yocto Meta Layers with repo"
+title: "Yocto 03: How to Handle Multiple Yocto Meta Layers with repo"
 date: 2025-07-15T20:44:22+02:00
 draft: false
 description: "Yocto has layers, like Ogres and onions. Keeping all of them in sync? That's where things can get messy, unless the right tools are used."
@@ -138,7 +138,7 @@ This was good, but there's still a lot to learn. In the next chapters of my blog
 But if you can't wait already, then I suggest you learn:
 
 * How to shallow clone a git repository with repo, to speed up the download times and decrease the used disk space
-* How to configure Yocto build directory, or you could also read my link:{{< relref "how-to-setup-yocto-for-rpi.adoc" >}}#build-configuration[other article] that shortly talks about it
+* How to configure Yocto build directory, or you could also read my link:{{< relref "yocto-01-how-to-setup-yocto-for-rpi.adoc" >}}#build-configuration[other article] that shortly talks about it
 
 I hope this was useful!
 Thanks for reading, more will come soon.

@@ -1,5 +1,5 @@
 ---
-title: "Yocto I: How to Set Up Yocto for Raspberry Pi"
+title: "Yocto 01: How to Set Up Yocto for Raspberry Pi"
 date: 2025-07-03T22:16:50+02:00
 draft: false
 description: "This is a short Yocto tutorial to help me (and you) set up a new Raspberry Pi Yocto environment. We’ll gather the meta layers, pick the target board, and finally build a custom Raspberry Pi Linux distribution."
@@ -48,7 +48,7 @@ git clone https://github.com/openembedded/meta-openembedded.git
 
 make sure that all of the meta layers have a branch of your interest checked out, not just `master`. My suggestion is to go with **scarthgap**, the current LTS.
 
-The step of setting up the sources should at some point be automatized with the help of a `repo` tool, described in detail in article link:{{< relref "how-to-handle-multiple-yocto-meta-layers.adoc" >}}[_How to Handle Multiple Yocto Meta Layers with repo_].
+The step of setting up the sources should at some point be automatized with the help of a `repo` tool, described in detail in article link:{{< relref "yocto-03-how-to-handle-multiple-yocto-meta-layers.adoc" >}}[_How to Handle Multiple Yocto Meta Layers with repo_].
 
 
 == Build Configuration [[build-configuration]]

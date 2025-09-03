@@ -1,0 +1,14 @@
+---
+title: "Yocto 02: How to Create a Custom Meta Layer"
+date: 2025-09-03T22:38:25+02:00
+draft: true
+description: "Building a Yocto distribution only from ready-made meta-layers is like baking brownies from a box — quick and decent, but rarely the perfect dessert. To really match your taste, you’ll need to add your own ingredients with custom layers and recipes."
+---
+
+Building a Yocto distribution only from ready-made meta-layers is like baking brownies from a box — quick and decent, but rarely the perfect dessert. To really match your taste, you’ll need to add your own ingredients with custom layers and recipes.
+
+This tutorial is a continuation of the Yocto series. Did you setup your raspberry pi distribution already? If not, it's highly recommended to go through link:{{< relref "yocto-01-how-to-setup-yocto-for-rpi.adoc" >}}[_the first article of the series_], describing the setup in detail. 
+
+= Yocto Theory
+
+
