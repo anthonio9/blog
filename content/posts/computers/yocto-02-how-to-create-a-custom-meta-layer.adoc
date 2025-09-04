@@ -11,4 +11,18 @@ This tutorial is a continuation of the Yocto series. Did you setup your raspberr
 
 = Yocto Theory
 
+Before getting into the practical details, let's first talk the theory. To understand the operations done in the following subsections, two crucial Yocto concepts have to be introduced, **recipes** and **meta-layers**. 
+
+== recipes
+
+A Yocto recipe is like a kitchen recipe in that it lays out, step by step, how to gather and prepare the ingredients (what to fetch, patch, configure, build, package). It's a script interpreted by Yocto's chef and the build engine - `bitbake`. Recipes usually are named after the package they describe and have a `*.bb` (bb for bitbake) extension. A typical recipe instructs where to fetch the resources from, be it a git repository or a remotely hosted tar archive, then how to unpack them, apply patches, configure the build system, compile the sources, and finally package the results. The recipe itself does not perform these actions, it only describes them. It is BitBake that interprets the recipe and executes the corresponding tasks.
+
+You're likely asking what kind of resources can be fetched and build, am I right? Well, almost anything. Anything that is downloadable of copyable (as resources stored on a local disk are valid, too) and available under a url or a file path will do. A library, a whole application, a gallery of images (rather unusual for an embedded system), even the full Linux kernel. The build step is optional, as all those things can be pre-build binaries, just make sure that they are in fact compatible with the target system CPU architecture.
+
+A very unique characteristic of Yocto is that recipes can be stacked together, or in the language of the framework - _appended_. Imagine a basic brownie recipe: the flour, milk, and chocolate that make up the dough, along with the oven temperature and baking time, are all listed there. That’s a complete recipe for a Basic Brown Brownie. Now, imagine a brown brownie with cherries on top. It's almost the same, with only a single thing added. How should that change be applied to the original recipe? In the world of Yocto, if the original recipe were on a paper page, a single line of "add cherries on top of the dough" would be written on a sticky note, attached at the bottom of the page. Each further tweak gets its own note, stacked in order, until the updated recipe is complete.
+
+Those sticky notes share the same name as the original recipe, but with the extension `*.bbappend`.
+
+== meta-layers
+
 
