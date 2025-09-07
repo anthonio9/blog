@@ -5,6 +5,8 @@ draft: true
 description: "Building a Yocto distribution only from ready-made meta-layers is like baking brownies from a box — quick and decent, but rarely the perfect dessert. To really match your taste, you’ll need to add your own ingredients with custom layers and recipes."
 ---
 
+:imagesdir: images/
+
 Building a Yocto distribution only from ready-made meta-layers is like baking brownies from a box — quick and decent, but rarely the perfect dessert. To really match your taste, you’ll need to add your own ingredients with custom layers and recipes.
 
 This tutorial is a continuation of the Yocto series. Did you setup your raspberry pi distribution already? If not, it's highly recommended to go through link:{{< relref "yocto-01-how-to-setup-yocto-for-rpi.adoc" >}}[_the first article of the series_], describing the setup in detail. 
@@ -19,10 +21,26 @@ A Yocto recipe is like a kitchen recipe in that it lays out, step by step, how t
 
 You're likely asking what kind of resources can be fetched and build, am I right? Well, almost anything. Anything that is downloadable of copyable (as resources stored on a local disk are valid, too) and available under a url or a file path will do. A library, a whole application, a gallery of images (rather unusual for an embedded system), even the full Linux kernel. The build step is optional, as all those things can be pre-build binaries, just make sure that they are in fact compatible with the target system CPU architecture.
 
+image::basic-brown-brownie-recipe.png["This was supposed to be a picture of the recipe"]
+
 A very unique characteristic of Yocto is that recipes can be stacked together, or in the language of the framework - _appended_. Imagine a basic brownie recipe: the flour, milk, and chocolate that make up the dough, along with the oven temperature and baking time, are all listed there. That’s a complete recipe for a Basic Brown Brownie. Now, imagine a brown brownie with cherries on top. It's almost the same, with only a single thing added. How should that change be applied to the original recipe? In the world of Yocto, if the original recipe were on a paper page, a single line of "add cherries on top of the dough" would be written on a sticky note, attached at the bottom of the page. Each further tweak gets its own note, stacked in order, until the updated recipe is complete.
 
 Those sticky notes share the same name as the original recipe, but with the extension `*.bbappend`.
 
 == meta-layers
 
+Recipes are usually grouped into larger chapters based on the type of treat: brownies and donuts fit well into Desserts, while Wiener Schnitzel alongside potato salad belongs in a chapter on German dinners. In Yocto, these chapters are called meta-layers, each devoted to a single domain such as networking features, multimedia, or providing support for a programming language like Python. However, meta-layers are more than just chapters in a cookbook. They not only group recipes into logical domains, but also define how changes stack: the order of the layers and their priority decides the order of application of the `*.bbappend` files - our sticky notes. In case of two meta-layers defining a recipe with the same name, only the one with the higher priority is parsed. The configuration of each meta-layer is stored in a _conf/layer.conf_ file and must contain variables:
+
+* `BBPATH`: the root directory of the meta-layer.
+* `BBFILES`: Defines the location for all recipes in the layer.
+* `BBFILE_COLLECTIONS`: name of the layer, to which `meta-` is prepended. This name is used to refer to the layer in the other Yocto components. For example `raspberrypi` in case of `meta-raspberrypi` layer.
+* `BBFILE_PATTERN`: Expands immediately during parsing to provide the directory of the layer.
+* `BBFILE_PRIORITY`: Already covered priority, the higher the value, the more important the layer is and will overwrite layer of less importance.
+* `LAYERVERSION`: The version number for the layer.
+* `LAYERDEPENDS`: Lists all layers on which this layer depends (if any).
+* `LAYERSERIES_COMPAT`: Lists the Yocto Project releases for which the current version is compatible.
+
+More about the meta-layers and their configuration is available at the official https://docs.yoctoproject.org/dev/dev-manual/layers.html[Yocto documentation]
+
+Meta-layers contains other files than just the recipes and the `*.bbappend` files. They also hold `*.bbclass` files, as well as machine and distribution configuration files. These are important topics, but they’re out of scope for now - I’ll cover them another time. For this article, let’s focus only on recipes. One particular category deserves special mention: the image recipe. This type of recipe defines which packages are included in the final flashable image.
 
