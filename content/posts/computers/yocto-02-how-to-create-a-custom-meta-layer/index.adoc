@@ -29,7 +29,7 @@ Those sticky notes share the same name as the original recipe, but with the exte
 
 == meta-layers
 
-Recipes are usually grouped into larger chapters based on the type of treat: brownies and donuts fit well into Desserts, while Wiener Schnitzel alongside potato salad belongs in a chapter on German dinners. In Yocto, these chapters are called meta-layers, each devoted to a single domain such as networking features, multimedia, or providing support for a programming language like Python. However, meta-layers are more than just chapters in a cookbook. They not only group recipes into logical domains, but also define how changes stack: the order of the layers and their priority decides the order of application of the `*.bbappend` files - our sticky notes. In case of two meta-layers defining a recipe with the same name, only the one with the higher priority is parsed. The configuration of each meta-layer is stored in a _conf/layer.conf_ file and must contain variables:
+Recipes are usually grouped into larger chapters based on the type of treat: brownies and donuts fit well into _Desserts_, while Wiener Schnitzel alongside the potato salad belongs in a chapter on _German Dinners_. In Yocto, these chapters are called meta-layers, each devoted to a single domain such as networking features, multimedia, or providing support for a programming language like Python. However, meta-layers are more than just chapters in a cookbook. They not only group recipes into logical domains, but also define how changes stack: the order of the layers and their priority decides the order of application of the `*.bbappend` files - our sticky notes. In case of two meta-layers defining a recipe with the same name, only the one with the higher priority is parsed. The configuration of each meta-layer is stored in a _conf/layer.conf_ file and must contain variables:
 
 * `BBPATH`: the root directory of the meta-layer.
 * `BBFILES`: Defines the location for all recipes in the layer.
@@ -42,5 +42,79 @@ Recipes are usually grouped into larger chapters based on the type of treat: bro
 
 More about the meta-layers and their configuration is available at the official https://docs.yoctoproject.org/dev/dev-manual/layers.html[Yocto documentation]
 
-Meta-layers contains other files than just the recipes and the `*.bbappend` files. They also hold `*.bbclass` files, as well as machine and distribution configuration files. These are important topics, but they’re out of scope for now - I’ll cover them another time. For this article, let’s focus only on recipes. One particular category deserves special mention: the image recipe. This type of recipe defines which packages are included in the final flashable image.
+Meta-layers contain other files than just the recipes and the `\*.bbappend` files. They also hold `*.bbclass` files, as well as machine and distribution configuration files. These are important topics, but they’re out of scope for now - I’ll cover them another time. For this article, let’s focus only on recipes. One particular category deserves special mention: the image recipe. This type of recipe defines which packages are included in the final flashable image.
 
+== Image recipe
+
+An image recipe is like a wedding banquet menu - a full multi-course plan that lists which dishes (packages) will be served, but leaves the cooking steps to the individual recipes (`*.bb` recipes). The recipe determines the contents of the final image, which is adjusted by appending package names to the `IMAGE_INSTALL` variable. More on that in the _Practice_ section.
+
+= Practice
+
+Now, that the basic Yocto terms are covered, let's move into the actuall works. Below subsections assumes the knowledge from the previous tutorial on setting up the RPI environment. Follow, by sourcing the bitbake environment from the `poky` meta-layer:
+
+----
+source sources/poky/oe-init-build-env
+----
+
+== Create a meta-layer
+
+A meta layer can be created in at least two ways, either with the use of a `bitbake-layers` script or manually, by creating a new directory with an adequate structure of the _<layer-name>/conf/_. In the case of the latter, the best is to start by copying an existing meta-layer.
+
+=== bitbake-layers
+
+----
+bitbake-layers create-layer --help
+NOTE: Starting bitbake server...
+usage: bitbake-layers create-layer [-h] [--add-layer] [--layerid LAYERID] [--priority PRIORITY] [--example-recipe-name EXAMPLERECIPE] [--example-recipe-version VERSION] layerdir
+
+Create a basic layer
+
+positional arguments:
+  layerdir              Layer directory to create
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --add-layer, -a       Add the layer to bblayers.conf after creation
+  --layerid LAYERID, -i LAYERID
+                        Layer id to use if different from layername
+  --priority PRIORITY, -p PRIORITY
+                        Priority of recipes in layer
+  --example-recipe-name EXAMPLERECIPE, -e EXAMPLERECIPE
+                        Filename of the example recipe
+  --example-recipe-version VERSION, -v VERSION
+                        Version number for the example recipe
+----
+
+`bitbake-layers` is rather simple to get around, use `--help` if confused. Before setting up a meta-layer, figure out its name, location and the priority. The the tutorial purpose the layer will be called _meta-custom_ and located in _sources_. Below command assumes that _build_ is working directory, as it's the default behavriour after sourcing the bitbake environment.
+
+----
+bitbake-layers create-layer ../sources/meta-custom/ --add-layer --example-recipe-name custom-image
+----
+
+The command creates below file structure and the new layer is already appended to the _build/conf/bblayers.conf_.
+
+----
+meta-custom/
+├── conf
+│   └── layer.conf
+├── COPYING.MIT
+├── README
+└── recipes-custom-image
+    └── custom-image
+        └── custom-image_0.1.bb
+----
+
+=== manual setup
+
+The same file structure can be achieved manually, however my advice is to name the directories slightly differently, moreover, in our case the license file is not a necessity as the `LICENSE` variable in the image recipe can simply be set to `"closed"`. The easier to read file structure is as below:
+
+----
+meta-custom/
+├── conf
+│   └── layer.conf
+├── COPYING.MIT
+├── README
+└── recipes-custom
+    └── images
+        └── custom-image_0.1.bb
+----
