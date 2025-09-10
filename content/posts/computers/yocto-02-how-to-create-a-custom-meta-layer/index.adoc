@@ -106,15 +106,65 @@ meta-custom/
 
 === manual setup
 
-The same file structure can be achieved manually, however my advice is to name the directories slightly differently, moreover, in our case the license file is not a necessity as the `LICENSE` variable in the image recipe can simply be set to `"closed"`. The easier to read file structure is as below:
+The same file structure can be achieved manually, however my advice is to name the directories slightly differently, moreover, in our case the license file is not a necessity as the `LICENSE` variable in the image recipe can simply be set to `"CLOSED"`. The easier to read file structure is as below:
 
 ----
 meta-custom/
 ├── conf
 │   └── layer.conf
-├── COPYING.MIT
 ├── README
 └── recipes-custom
     └── images
         └── custom-image_0.1.bb
+----
+
+=== layer.conf
+
+_layer.conf_ stores the configuration of the meta layer, by default the `bitbake-layers` script generates in below form, it's a good example to follow:
+
+----
+# We have a conf and classes directory, add to BBPATH
+BBPATH .= ":${LAYERDIR}"
+
+# We have recipes-* directories, add to BBFILES
+BBFILES += "${LAYERDIR}/recipes-*/*/*.bb \
+            ${LAYERDIR}/recipes-*/*/*.bbappend"
+
+BBFILE_COLLECTIONS += "meta-custom"
+BBFILE_PATTERN_meta-custom = "^${LAYERDIR}/"
+BBFILE_PRIORITY_meta-custom = "6"
+
+LAYERDEPENDS_meta-custom = "core"
+LAYERSERIES_COMPAT_meta-custom = "scarthgap"
+----
+
+In case of the `--priority` parameter being passed to the `bitabe-layers create-layer` command, the `BBFILE_PRIORITY_meta-custom` variable is adjusted, however by default it's set to 6.
+
+=== The Image recipe
+
+Finally, let's practice the image recipe. Here, the final list of the packages present on the operating system is put together with either of two variables `IMAGE_FEATRUES` and `IMAGE_INSTALL`. They are quite similar to each other, the difference being that `IMAGE_INSTALL` lists single packages, whilst `IMAGE_FEATURES` manages groups of packages as a single feature may involve multiple packages. To create an actual image from the image recipe, one of the directives `inherit image` or `inherit core-image` has to be used, here, the choice is `inherit core-image` as it provided the openssh feature.
+What should a basic image for a raspberry pi device have? It all depends on the usecase of the device, but there are must-haves like an ssh server, enabling remote communication with the device - this is a feature. A package that likely will turn out useful is `python3` - containing the Python 3 language. A bit less useful may be a C library such as `mosquitto` or an audio server - `pipewire`. All three of them are packages, that can be appended to the `IMAGE_INSTALL` variable. The customization of images is tremendously well described in https://docs.yoctoproject.org/dev-manual/customizing-images.html[the official Yocto Project documentation], so go there to learn more! An image file with all of those chagnes applied would look like below:
+
+----
+SUMMARY = "simple image recipe"
+DESCRIPTION = "simple image recipe"
+LICENSE = "CLOSED"
+
+python do_display_banner() {
+    bb.plain("*******************************************************************");
+    bb.plain("*                                                                 *");
+    bb.plain("*   A custom recipe: ssh server, python, pipewire and mosquitto   *");
+    bb.plain("*                                                                 *");
+    bb.plain("*******************************************************************");
+}
+
+addtask display_banner before do_build
+
+inherit core-image
+
+IMAGE_FEATURES += "ssh-server-openssh"
+
+IMAGE_INSTALL:append = " python3"
+IMAGE_INSTALL:append = " mosquitto"
+IMAGE_INSTALL:append = " pipewire"
 ----
