@@ -6,6 +6,7 @@ description: "This is a short Yocto tutorial to help me (and you) set up a new R
 ---
 
 Okay, this is me coming back to my roots from a few years back (well, actually just half a year, but leaving a skill unused that long feels like ages). This is a short Yocto tutorial to help me (and you) set up a new Raspberry Pi Yocto environment. We’ll gather the meta layers, pick the target board, and finally build a custom Raspberry Pi Linux distribution.
+
 = Yocto is cool
 
 Yes, it is. It's insanely good. However with the good parts come also a bit overwhelming ones, like its https://docs.yoctoproject.org/5.0.10/brief-yoctoprojectqs/index.html[documentation]. For starters it's much easier to follow somebody's blog and setup things quickly - like this https://medium.com/@boussettaachraf26/set-up-yocto-for-raspberry-pi-31b4a1ec4b10[medium post]. 
