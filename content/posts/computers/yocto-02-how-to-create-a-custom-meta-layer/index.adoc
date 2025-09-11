@@ -1,15 +1,19 @@
 ---
 title: "Yocto 02: How to Create a Custom Meta Layer"
 date: 2025-09-03T22:38:25+02:00
-draft: true
+draft: false
 description: "Building a Yocto distribution only from ready-made meta-layers is like baking brownies from a box — quick and decent, but rarely the perfect dessert. To really match your taste, you’ll need to add your own ingredients with custom layers and recipes."
+Toc: true
+TocTitle: " "
 ---
 
 :imagesdir: images/
+:toc:
 
 Building a Yocto distribution only from ready-made meta-layers is like baking brownies from a box — quick and decent, but rarely the perfect dessert. To really match your taste, you’ll need to add your own ingredients with custom layers and recipes.
 
 This tutorial is a continuation of the Yocto series. Did you setup your raspberry pi distribution already? If not, it's highly recommended to go through link:{{< relref "yocto-01-how-to-setup-yocto-for-rpi.adoc" >}}[_the first article of the series_], describing the setup in detail. 
+
 
 = Yocto Theory
 
@@ -50,7 +54,7 @@ An image recipe is like a wedding banquet menu - a full multi-course plan that l
 
 = Practice
 
-Now, that the basic Yocto terms are covered, let's move into the actuall works. Below subsections assumes the knowledge from the previous tutorial on setting up the RPI environment. Follow, by sourcing the bitbake environment from the `poky` meta-layer:
+Now, that the basic Yocto terms are covered, let's move into the actual work. Below subsections assumes the knowledge from the previous tutorial on setting up the RPI environment. Start by sourcing the bitbake environment from the `poky` meta-layer:
 
 ----
 source sources/poky/oe-init-build-env
@@ -85,7 +89,7 @@ optional arguments:
                         Version number for the example recipe
 ----
 
-`bitbake-layers` is rather simple to get around, use `--help` if confused. Before setting up a meta-layer, figure out its name, location and the priority. The the tutorial purpose the layer will be called _meta-custom_ and located in _sources_. Below command assumes that _build_ is working directory, as it's the default behavriour after sourcing the bitbake environment.
+`bitbake-layers` is rather simple to get around, use `--help` if confused. Before setting up a meta-layer, figure out its name, location and the priority. The the tutorial purpose the layer will be called _meta-custom_ and located in _sources_. Below command assumes that _build_ is working directory, as it's the default behavior after sourcing the bitbake environment.
 
 ----
 bitbake-layers create-layer ../sources/meta-custom/ --add-layer --example-recipe-name custom-image
@@ -120,7 +124,7 @@ meta-custom/
 
 === layer.conf
 
-_layer.conf_ stores the configuration of the meta layer, by default the `bitbake-layers` script generates in below form, it's a good example to follow:
+_layer.conf_ stores the configuration of the meta layer; by default `bitbake-layers` generates it in below form, it's a good example to follow:
 
 ----
 # We have a conf and classes directory, add to BBPATH
@@ -138,12 +142,12 @@ LAYERDEPENDS_meta-custom = "core"
 LAYERSERIES_COMPAT_meta-custom = "scarthgap"
 ----
 
-In case of the `--priority` parameter being passed to the `bitabe-layers create-layer` command, the `BBFILE_PRIORITY_meta-custom` variable is adjusted, however by default it's set to 6.
+In case of the `--priority` parameter being passed to the `bitbake-layers create-layer` command, the `BBFILE_PRIORITY_meta-custom` variable is adjusted, however by default it's set to 6.
 
 === The Image recipe
 
-Finally, let's practice the image recipe. Here, the final list of the packages present on the operating system is put together with either of two variables `IMAGE_FEATRUES` and `IMAGE_INSTALL`. They are quite similar to each other, the difference being that `IMAGE_INSTALL` lists single packages, whilst `IMAGE_FEATURES` manages groups of packages as a single feature may involve multiple packages. To create an actual image from the image recipe, one of the directives `inherit image` or `inherit core-image` has to be used, here, the choice is `inherit core-image` as it provided the openssh feature.
-What should a basic image for a raspberry pi device have? It all depends on the usecase of the device, but there are must-haves like an ssh server, enabling remote communication with the device - this is a feature. A package that likely will turn out useful is `python3` - containing the Python 3 language. A bit less useful may be a C library such as `mosquitto` or an audio server - `pipewire`. All three of them are packages, that can be appended to the `IMAGE_INSTALL` variable. The customization of images is tremendously well described in https://docs.yoctoproject.org/dev-manual/customizing-images.html[the official Yocto Project documentation], so go there to learn more! An image file with all of those chagnes applied would look like below:
+Finally, let's practice the image recipe. Here, the final list of the packages present on the operating system is put together with either of two variables `IMAGE_FEATURES` and `IMAGE_INSTALL`. They are quite similar to each other, the difference being that `IMAGE_INSTALL` lists single packages, whilst `IMAGE_FEATURES` manages groups of packages as a single feature may involve multiple packages - those are managed by the Yocto itself. To create an actual image from the image recipe, one of the directives `inherit image` or `inherit core-image` has to be used, here, the choice is `inherit core-image` as it provided the openssh feature.
+What should a basic image for a raspberry pi device have? It all depends on the usecase of the device, but there are must-haves like an ssh server, enabling remote communication with the device - this is a feature. A package that likely will turn out useful is `python3` - containing the Python 3 language. A bit less useful may be a C library such as `mosquitto` or an audio server - `pipewire`. All three of them are packages, that can be appended to the `IMAGE_INSTALL` variable. The customization of images is tremendously well described in https://docs.yoctoproject.org/dev-manual/customizing-images.html[the official Yocto Project documentation], so go there to learn more! An image file with all of those changes applied would look like below:
 
 ----
 SUMMARY = "simple image recipe"
@@ -168,3 +172,54 @@ IMAGE_INSTALL:append = " python3"
 IMAGE_INSTALL:append = " mosquitto"
 IMAGE_INSTALL:append = " pipewire"
 ----
+
+The append instructions is new here. Just like its name says, it appends to the variable it follows, meaning that after all the appends are parsed the `IMAGE_INSTALL` variable has a value of ` python3 mosquitto pipewire`.
+
+== Build the image
+
+Assuming that the image recipe name is indeed `custom-image.bb` and that the layer is already added to the `bblayer.conf` file, to build the image, running below command should be enough
+
+----
+bitbake custom-image
+----
+
+A successfully run build command should send below output to the stdout:
+
+----
+$ bitbake custom-image
+Loading cache: 100% |#########################################################################################################################################################################################################| Time: 0:00:04
+Loaded 4746 entries from dependency cache.
+NOTE: Resolving any missing task queue dependencies
+
+Build Configuration:
+BB_VERSION           = "2.8.0"
+BUILD_SYS            = "x86_64-linux"
+NATIVELSBSTRING      = "universal"
+TARGET_SYS           = "aarch64-poky-linux"
+MACHINE              = "raspberrypi4-64"
+DISTRO               = "poky"
+DISTRO_VERSION       = "5.0.11"
+TUNE_FEATURES        = "aarch64 crc cortexa72"
+TARGET_FPU           = ""
+meta                 
+meta-poky            
+meta-yocto-bsp       = "HEAD:792d18b4cb2451b00280641403e6eaf37bd6e53f"
+meta-raspberrypi     = "HEAD:8e9ec2685a902038d1d6ad20f0821ee5655432a9"
+meta-oe              
+meta-multimedia      
+meta-networking      
+meta-python          = "HEAD:e8fd97d86af86cdcc5a6eb3f301cbaf6a2084943"
+meta-custom          = "<unknown>:<unknown>"
+
+Sstate summary: Wanted 1180 Local 0 Mirrors 0 Missed 1180 Current 2044 (0% match, 63% complete)##########################################################################################################                     | ETA:  0:00:01
+Initialising tasks: 100% |####################################################################################################################################################################################################| Time: 0:00:11
+NOTE: Executing Tasks
+*******************************************************************
+*                                                                 *
+*   A custom recipe: ssh server, python, pipewire and mosquitto   *
+*                                                                 *
+*******************************************************************
+NOTE: Tasks Summary: Attempted 6628 tasks of which 4471 didn't need to be rerun and all succeeded.
+----
+
+Now the image is available at _tmp/deploy/images/raspberrypi4-64/custom-image-raspberrypi4-64.rootfs.wic.bz2_. Flash it, upload it, do whatever you need to make it run on your device!

@@ -1,4 +1,5 @@
 baseURL = 'http://anthonio9.github.com/blog'
 languageCode = 'en-us'
 title = 'anthonio9 BLOG'
+enableGitInfo = true
 

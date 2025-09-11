@@ -36,7 +36,7 @@ pagination.pagerSize = 5
 
   # set post to show the last updated
   # If you use git, you can set `enableGitInfo` to `true` and then post will automatically get the last updated
-  showLastUpdated = false
+  showLastUpdated = true
 
   # set a custom favicon (default is a `themeColor` square)
   # favicon = "favicon.ico"
@@ -115,7 +115,7 @@ pagination.pagerSize = 5
 enableInlineShortcodes = false
 
 [security.exec]
-allow = ["^dart-sass-embedded$", "^go$", "^npx$", "^postcss$", "^asciidoctor$"]
+allow = ["^dart-sass-embedded$", "^go$", "^git$", "^npx$", "^postcss$", "^asciidoctor$"]
 osEnv = ["(?i)^(PATH|PATHEXT|APPDATA|TMP|TEMP|TERM|RUBYLIB)$"]
 
 [security.funcs]
@@ -148,4 +148,7 @@ urls = [".*"]
       hardWraps = false
       unsafe = true
       xHTML = false
-
+  [markup.tableOfContents]
+    endLevel = 4
+    ordered = false
+    startLevel = 2
