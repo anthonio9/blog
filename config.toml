@@ -3,3 +3,7 @@ languageCode = 'en-us'
 title = 'anthonio9 BLOG'
 enableGitInfo = true
 
+[Params]
+giscusTheme="preferred_color_scheme"
+disableComments = false
+
