@@ -2,6 +2,7 @@
 title: "Yocto 04: How to Build a Yocto Distribution With Docker"
 date: 2025-08-26T22:35:40+02:00
 draft: false
+description: "In the previous blog posts a basic setup for a RPI distribution with Yocto and a way to handle multiple layers synchronized with repo manifests were already discussed. This article is a step forward, making use of the knownledge gathered so far, yet allowing for even more automatization, all thanks to the Docker Containers."
 ---
 
 In the previous blog posts a basic setup for a RPI distribution with Yocto and a way to handle multiple layers synchronized with repo manifests were already discussed. This article is a step forward, making use of the knownledge gathered so far, yet allowing for even more automatization, all thanks to the Docker Containers.
