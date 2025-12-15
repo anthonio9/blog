@@ -1,0 +1,22 @@
+---
+title: "QNX QEMU Setup"
+date: 2025-12-15T22:01:01+01:00
+draft: true
+description: "QNX has recently shared their 8.0 version with a free license for learning and academic projects, opening their real-time OS to many new potential users. Not everyone has a physical device to run the QNX, for those QNX has prepared a QEMU wrapper - `mkqnximage` command."
+---
+
+QNX has recently shared their 8.0 version with a free license for learning and academic projects, opening their real-time OS to many new potential users. 
+Not everyone has a physical device to run the QNX, for those QNX has prepared a QEMU wrapper - `mkqnximage` command.
+
+== Prerequisites
+
+This article assumes that the https://qnx.software/en/software/products-and-solutions/qnx-software-development-platform[QNX SDP 8.0] is already available at your local machine with access to the `mkqnximage` command.
+
+== mkqnximage
+
+In my understanding `mkqnximage` is a wrapper script genreating a QNX OS virtual machine image. It doesn't just wrap on QEMU, other supervisors, _VMWare_ and _VirtualBox_, are supported as well.
+The command is described with quite a detail in the https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.utilities/topic/m/mkqnximage.html[documentation], however a few important caveats are never mentioned. 
+
+=== Basic usage
+
+
