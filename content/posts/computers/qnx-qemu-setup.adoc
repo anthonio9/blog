@@ -15,8 +15,15 @@ This article assumes that the https://qnx.software/en/software/products-and-solu
 == mkqnximage
 
 In my understanding `mkqnximage` is a wrapper script genreating a QNX OS virtual machine image. It doesn't just wrap on QEMU, other supervisors, _VMWare_ and _VirtualBox_, are supported as well.
-The command is described with quite a detail in the https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.utilities/topic/m/mkqnximage.html[documentation], however a few important caveats are never mentioned. 
+The command is described with quite a detail in the https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.utilities/topic/m/mkqnximage.html[documentation], however a few important caveats are never mentioned. I'll show you around.
 
 === Basic usage
 
+First, let's get familiar with the `--help` option as it covers a lot more details than the official documentation. `--help` output describes `--data-size`, `--data-inodes` and `--ram` options which make the created image even more flexible.
+
+=== Not enough disk space?
+
+=== Large disk spaces, but still too many files?
+
+Sounds counterintuitive, right? 
 
