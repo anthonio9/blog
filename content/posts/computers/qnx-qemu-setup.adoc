@@ -10,7 +10,9 @@ Not everyone has a physical device to run the QNX, for those QNX has prepared a 
 
 == Prerequisites
 
-This article assumes that the https://qnx.software/en/software/products-and-solutions/qnx-software-development-platform[QNX SDP 8.0] is already available at your local machine with access to the `mkqnximage` command.
+This article assumes that the https://qnx.software/en/software/products-and-solutions/qnx-software-development-platform[QNX SDP 8.0] is already available at your local machine 
+with access to the `mkqnximage` command. If not, then take my hint - remember to apply for the license and then **deploy** it specifically to your own email address 
+through https://www.qnx.com/account/dashboard/[my QNX Lincense Manager]. I had plently of problems with getting access to the QNX SDP simply because my license was not deployed to my account.
 
 == mkqnximage
 
