@@ -21,7 +21,46 @@ The command is described with quite a detail in the https://www.qnx.com/develope
 
 === Basic usage
 
-First, let's get familiar with the `--help` option as it covers a lot more details than the official documentation. `--help` output describes `--data-size`, `--data-inodes` and `--ram` options which make the created image even more flexible.
+First, to get access to the `mkqnximage` command, source the QNX SDP environment with the __qnxsdp-env.sh__ script:
+----
+$ source ~/qnx/qnx800/qnxsdp-env.sh 
+QNX_HOST=/home/antoni/qnx/qnx800/host/linux/x86_64
+QNX_TARGET=/home/antoni/qnx/qnx800/target/qnx
+MAKEFLAGS=-I/home/antoni/qnx/qnx800/target/qnx/usr/include
+----
+
+Let's get familiar with the `--help` option as it covers a lot more details than the official documentation. `--help` output describes `--data-size`,
+`--data-inodes` and `--ram` options which make the created image even more flexible.
+
+----
+$ mkqnximage --help
+----
+
+Now, create a directory that will store the environment (virtual disks and option files) created by `mkqnximage`. My choice of the dir name is just _qnximage_, enter the directory:
+
+----
+mkdir qnximage
+cd qnximage
+----
+
+Finally, to create an environment with all of the options set default, simply run `mkqnximage` with no parameters. 
+This will create an x86_64 QEMU emulation. Then, to launch it, use a `--run` parameter.
+
+----
+mkqnximage
+mkqnximage --run
+----
+
+=== Exiting and restarting the emulation
+
+Once in the emulator's console (assuming it's QEMU), there's a simple way out. Just hit `Ctrl+A` and then `X`. Yeah, that's it - `Ctrl+A X`
+
+`mkqnximage` uses persistent storage and all the changes done to the emulation are saved in the virutal disk. Thanks to this feature it's possible to restart
+an emulation after it had exited. To do so, enter the directory where the emulation environment was created (for example the _qnximage_ directory from the previous step), then run `mkqnximage --run`.
+
+=== arch or x86?
+
+
 
 === Not enough disk space?
 
@@ -29,3 +68,17 @@ First, let's get familiar with the `--help` option as it covers a lot more detai
 
 Sounds counterintuitive, right? 
 
+=== Full command with all basic options
+
+----
+mkqnximage --type=qemu --hostname=qnxmachine --arch='aarch64le' --data-size='8192' --ram='4G' --data-inodes='10000000'
+----
+
+=== The IP Address and SSH password
+
+The ip address can be fetched with `ifconfig` command from inside of the emulator console. The SSH server is enabled by default, 
+and the password to it is the same as the requested user name. for example, the `root` user uses a password _root_.
+
+== The end
+
+Thanks for checking out my blog, feel free to ask me anything in the comments!
