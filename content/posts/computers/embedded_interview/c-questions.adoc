@@ -1,0 +1,20 @@
+---
+title: "C Questions"
+date: 2026-01-11T23:01:43+01:00
+draft: true
+---
+
+1. What are heap and stack?
+
+The stack and heap are two primary memory areas in C. Both are located in the virutal memory address space mapped to the physical memory by the operating system.
+Each process is assigned an address space, meaning that every process has its own stack and heap, but also code and data segments (more about those later).
+
+The two memory areas are organized in different manner. Stack, as the name says, "stacks" new symbols on top of the previous ones - Last In First Out (LIFO),
+last allocated gets removed first. This trivial approach makes it easy for the stack management to be automatic. Once the life of a scope is done, 
+all the symbols from that scope are removed.
+
+
+
+https://stackoverflow.com/questions/79923/what-and-where-are-the-stack-and-heap/13326916#13326916[good stack stackoverflow answer]
+
+2. Where are static variables located?
