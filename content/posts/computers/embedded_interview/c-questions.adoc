@@ -9,12 +9,77 @@ draft: true
 The stack and heap are two primary memory areas in C. Both are located in the virutal memory address space mapped to the physical memory by the operating system.
 Each process is assigned an address space, meaning that every process has its own stack and heap, but also code and data segments (more about those later).
 
-The two memory areas are organized in different manner. Stack, as the name says, "stacks" new symbols on top of the previous ones - Last In First Out (LIFO),
-last allocated gets removed first. This trivial approach makes it easy for the stack management to be automatic. Once the life of a scope is done, 
-all the symbols from that scope are removed.
+The two memory areas are organized in a different manner. Stack, as the name says, "stacks" new symbols on top of the previous ones - Last In First Out (LIFO),
+last allocated gets removed first. This trivial approach makes it easy for the stack management to be automatic - stack stores automatic allocation and deletion values.
+Once the life of a scope is done,  all the symbols from that scope are removed. Stack stores local variables, function parameters, function return addresses.
+Stack size is heavily limited as a for of an error detection mechanism. Small stack size prevents faulty recursion design (infinite recursion)
+and other vulnerabilities from taking too much resources, not allowing for a system degradation, instead throwing a stack overflow error.
+Each thread is given a portion of the stack memory, therefore a small stack size pays back in a larger number of possible threads - the fixed stack area is split into smaller chunks.
 
-
+Heap stores dynamically allocated values. Heap area is often described as unlimited as it really is only limited to the size of ram. This memory will take
+objects created with `new` or `malloc`, usually those that are of an unknown size at the compile time. At the end of life of a dynamically allocated object it has to be released (freed),
+otherwise a memory leaked happens - once the pointer to the memory is lost and the memory is unreachable, but not deallocated.
 
 https://stackoverflow.com/questions/79923/what-and-where-are-the-stack-and-heap/13326916#13326916[good stack stackoverflow answer]
 
+```
+-- Source - https://stackoverflow.com/a
+-- Posted by Sangeeth Saravanaraj, modified by community. See post 'Timeline' for change history
+-- Retrieved 2026-01-12, License - CC BY-SA 3.0
+
+ +--------------------------+
+ |                          |
+ |      command line        |
+ |        arguments         |
+ |    (argc and argv[])     |
+ |                          |
+ +--------------------------+
+ | Stack                    |
+ | (grows-downwards)        |
+ |                          |
+ |                          |
+ |                          |
+ |         F R E E          |
+ |        S P A C E         |
+ |                          |
+ |                          |
+ |                          |
+ |                          |
+ |     (grows upwards) Heap |
+ +--------------------------+
+ |                          |
+ |    Initialized data      |
+ |         segment          |
+ |                          |
+ +--------------------------+
+ |                          |
+ |     Initialized to       |
+ |        Zero (BSS)        |
+ |                          |
+ +--------------------------+
+ |                          |
+ |      Program Code        |
+ |                          |
+ +--------------------------+
+```
+
 2. Where are static variables located?
+
+Static variables are located either in the **Data Segment** or **BSS - Block Starting Symbol**. The static variables that get initialized in the code are stored in the data segment,
+and the uninitialized ones are stored in BSS, all of those are set to 0. Global variables are also thrown into the DS and BSS segments and follow the same rules of initiatlization. 
+However, using a keyword `static` with a global variable will limit the scope of the variable to the current translation unit only, this is sometimes called a __file scope__,
+the same mechanism can be applied to functions to limit their visibility. This means that the same variable type and name can be used by multiple TUs as long as it's static.
+Keep in mind that the lifetime of a static variable is the lifetime of a program, therefore a local static variable retains its value between function calls.
+
+3. Can global variables be seen by other Translation Units?
+
+Yes, they can. Global variables are linked externally by default, meaning that they are accessible throughout the whole program. However, to access such a variable in a foreign TU,
+it has to be redeclared with an `extern` keyword in that foreign TU. `const` keyword changes the default linkage to the internal one.
+
+4. What is object lifetime?
+
+5. What is an export table 
+
+6. How to show the content of a Translatoin Unit?
+
+7. What is the text / code segment?
