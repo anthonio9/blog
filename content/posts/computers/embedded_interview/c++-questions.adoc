@@ -1,0 +1,32 @@
+---
+title: "C++ Questions"
+date: 2026-02-05T23:13:51+01:00
+draft: true
+---
+
+. What is a vtable?
++
+Vtables or rather __virtual tables__ are a concept in C++ highly related to the concept of polymorphism. The tables are created by the compiler whenever a class contains a virtual function.
+For each concrete implementation of a class, there is a table of function pointers to all the virtual methods. A pointer to this table (called the virtual table) exists as a data member in all the objects. When one calls a virtual method, we lookup the object's v-table and call the appropriate derived class method.
+https://stackoverflow.com/a/3555290[stackoverflow]
+
+. What is a VPtr?
++
+Virtual Pointer is pointing to the Vtable of the virtual class, each object of the class has access to one. 
+
+. What is a Virtual Function?
++
+A virtual function is a member function in the base class that can be overridden in derived classes.
+
+. What is a pure virtual function?
++
+A pure virtual function is a virtual function with no implementation in the base class, declared using = 0. The 0 declaration forces the deriving classes to provide their own implementation.
+
+. What is an Abstract Class?
++
+A class with at least one pure virtual function is an abstract class that cannot be instantiated and serves as a blueprint for derived classes,
+which must provide their own implementation. Objects of an abstract class cannot be created directly, only objects of the derived classes can be created.
+
+. What is a Virtual Class?
++
+There is no Virtual Class, but a Virtual Base Class does exist

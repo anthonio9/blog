@@ -83,3 +83,13 @@ it has to be redeclared with an `extern` keyword in that foreign TU. `const` key
 6. How to show the content of a Translatoin Unit?
 
 7. What is the text / code segment?
+
+8. What does `volatile` keyword do?
+
+Volatile keyword tells the compiler NOT to optimize access to a variable described with this keyword. The compiler is not allowed to cache the variable value in a register,
+therefore each time the variable is accessed it's value is reloaded. The volatile keyword is often used when:
+* variable is expected to be changed by an interrupt
+* variable is expected to be changed by a signal handler
+Volatile is not a solution for access by a multithreaded application. It does not provide synchronization. There's a great article from 
+
+
