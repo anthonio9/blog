@@ -1,7 +1,7 @@
 ---
 title: "Nvim Install Nerd Fonts"
 date: 2026-05-17T11:07:22+02:00
-draft: true
+draft: false
 ---
 
 :imagesdir: images/
