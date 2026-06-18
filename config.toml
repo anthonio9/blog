@@ -1,9 +1,0 @@
-baseURL = 'http://anthonio9.github.com/blog'
-languageCode = 'en-us'
-title = 'anthonio9 BLOG'
-enableGitInfo = true
-
-[Params]
-giscusTheme="preferred_color_scheme"
-disableComments = false
-

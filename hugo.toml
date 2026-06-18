@@ -1,5 +1,6 @@
 baseurl = "/"
 languageCode = "en-us"
+enableGitInfo = true
 # Add it only if you keep the theme in the `themes` directory.
 # Remove it if you use the theme as a remote Hugo Module.
 theme = "terminal"
@@ -50,6 +51,12 @@ pagination.pagerSize = 5
   # whether to show a page's estimated reading time
   # readingTime = false # default
   readingTime = true
+
+  # whether to disable giscus comments on posts
+  disableComments = false
+
+  # giscus comment widget theme
+  giscusTheme = "preferred_color_scheme"
 
   # whether to show a table of contents
   # can be overridden in a page's front-matter
