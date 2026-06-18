@@ -89,7 +89,7 @@ optional arguments:
                         Version number for the example recipe
 ----
 
-`bitbake-layers` is rather simple to get around, use `--help` if confused. Before setting up a meta-layer, figure out its name, location and the priority. The the tutorial purpose the layer will be called _meta-custom_ and located in _sources_. Below command assumes that _build_ is working directory, as it's the default behavior after sourcing the bitbake environment.
+`bitbake-layers` is rather simple to get around, use `--help` if confused. Before setting up a meta-layer, figure out its name, location and the priority. For the tutorial purpose the layer will be called _meta-custom_ and located in _sources_. Below command assumes that _build_ is the current working directory, as it's the default behavior after sourcing the bitbake environment.
 
 ----
 bitbake-layers create-layer ../sources/meta-custom/ --add-layer --example-recipe-name custom-image

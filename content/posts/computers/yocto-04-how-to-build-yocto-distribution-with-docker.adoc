@@ -12,6 +12,31 @@ In the previous blog posts a basic setup for a RPI distribution with Yocto and a
 Docker makes setting up a Yocto environment a lot easier, especially on arch distros, which may not easily access all of the packages required by Yocto. A containerized image is independent from the host platform in terms of OS architecture, meaning that a debian system can be run inside of a container and hosted on an arch OS. All of the packages required by Yocto are installed in the container. 
 A contenerized image can also take advantage of a manifest file and follow other automatized instructions, usually formed into a bash script. 
 
+=== Install Docker
+
+Okay, but first let me walk you through a Docker install. For an extensive description checkout the https://docs.docker.com/engine/install/[official Docker documentation], but below should be just fine. 
+
+*Fedora*
+
+----
+# set up the repository
+sudo dnf config-manager addrepo --from-repofile https://download.docker.com/linux/fedora/docker-ce.repo
+
+# install the packages
+sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# start docker engine
+sudo systemctl enable --now docker
+
+# confirm that the docker is installed by running the hello world image
+sudo docker run hello-world
+
+# run docker as a non-root user
+sudo usermod -aG docker $USER
+----
+
+To get the docker group rights to take effect log out and back in or restart the machine.
+
 === Docker Container Setup
 
 Yocto is quite extensive with the list of required packages, therefore it makes sense to create a custom made Docker image. The containerized system of choice here is Ubuntu 22.04, as it's the last version supported by Yocto. This makes it possible to simply copy & paste the list of required packages straight from the Yocto Project documentation. The packages and tools present in the image are configured in the *dockerfile*.
@@ -102,12 +127,12 @@ DOCKER_BUILDKIT=1 docker build \
   -t yocto-dev .
 ----
 
-Run the container and give it a new name `yocto-dev-container`. The `-v` option sets up a binding between a local directory path and a path present in the container workspace, essentially linking container's `/home/builder/workspace` to `~/Projects/yocto-docker-api`. `-it` enables the interactive mode, meaning that a regular console window will open:
+Run the container and give it a new name `yocto-dev-container`. The `-v` option sets up a binding between a local directory path and a path present in the container workspace, essentially linking container's `/home/builder/workspace` to `~/Projects/yocto-docker-rpi`. `-it` enables the interactive mode, meaning that a regular console window will open:
 [bash]
 ----
 docker run -it \
   --name yocto-dev-container \
-  -v ~/Projects/yocto-docker-api:/home/builder/workspace \
+  -v ~/Projects/yocto-docker-rpi:/home/builder/workspace \
   yocto-dev
 ----
 
